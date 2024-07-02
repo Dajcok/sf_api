@@ -2,3 +2,4 @@
 api/.env
 api/vendor
 api/composer.lock
+db

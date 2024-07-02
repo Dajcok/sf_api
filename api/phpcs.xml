@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ruleset name="PSR12 Custom">
+    <description>PSR12 Without classes/enums in separate files</description>
+
+    <!-- Include PSR-12 as base standard -->
+    <rule ref="PSR12">
+        <!-- Disable specific rules -->
+        <exclude name="PSR1.Files.SideEffects"/>
+        <exclude name="PSR1.Classes.ClassDeclaration"/>
+    </rule>
+
+    <!-- You can add additional rules or excludes as needed -->
+</ruleset>

@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ namespace }};
+
+use Eloquent;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @mixin Eloquent
+ */
+class {{ class }} extends Model
+{
+    use HasFactory;
+}

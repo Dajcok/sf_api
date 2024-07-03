@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Utils;
 
 use App\DTO\Output\ControllerOutputData;
+use Cookie;
 use Illuminate\Http\JsonResponse;
 use App\Enums\ResponseStatusEnum;
 use InvalidArgumentException;
@@ -18,15 +19,15 @@ class Response
         array $cookies = []
     ): JsonResponse {
         if (!$status) {
-            $status = $statusCode >= 200 && $statusCode < 300 ? 'success' : 'error';
+            $status = $statusCode >= 200 && $statusCode < 300 ? ResponseStatusEnum::SUCCESS : ResponseStatusEnum::ERROR;
         }
 
-        $response = response();
+        $response = new JsonResponse();
 
         foreach ($cookies as $cookie) {
             if ($cookie instanceof CookieOptions) {
                 $response->withCookie(
-                    cookie(
+                    Cookie::make(
                         $cookie->name,
                         $cookie->value,
                         $cookie->expires,
@@ -34,8 +35,8 @@ class Response
                         $cookie->domain,
                         $cookie->secure,
                         $cookie->httpOnly,
-                        $cookie->raw,
-                        $cookie->sameSite->value
+                        $cookie->raw ?? false,
+                        $cookie->sameSite
                     )
                 );
                 continue;
@@ -44,6 +45,8 @@ class Response
         }
 
         $resBody = new ControllerOutputData($message, $status, $data);
-        return $response->json($resBody, $statusCode);
+        $response->setStatusCode($statusCode);
+        $response->setContent($resBody->jsonSerialize());
+        return $response;
     }
 }

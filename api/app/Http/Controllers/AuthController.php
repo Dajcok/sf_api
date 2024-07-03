@@ -4,20 +4,19 @@ namespace App\Http\Controllers;
 
 use app\Contracts\Services\AuthServiceContract;
 use App\DTO\Output\AuthenticatedOutputData;
-use App\Exceptions\Api\BadRequest;
+use App\Enums\JWTCookieTypeEnum;
 use App\Exceptions\Api\Unauthorized;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserLoginRequest;
+use App\Http\Controllers\Utils\JWTCookieOptions;
+use App\Http\Controllers\Utils\Response;
+use app\Http\Requests\Auth\UserCreateRequest;
+use app\Http\Requests\Auth\UserLoginRequest;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Utils\JWTCookieOptions;
-use App\Enums\JWTCookieTypeEnum;
-use App\Http\Controllers\Utils\Response;
 
 class AuthController extends Controller
 {
-    protected AuthServiceContract $service;
+    protected mixed $service;
 
     public function __construct(AuthServiceContract $authService)
     {

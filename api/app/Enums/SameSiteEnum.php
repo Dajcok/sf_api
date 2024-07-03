@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum SameSiteEnum: string
 {
-    case Lax = 'lax';
-    case Strict = 'strict';
-    case None = 'none';
+    case LAX = 'lax';
+    case STRICT = 'strict';
+    case NONE = 'none';
 }

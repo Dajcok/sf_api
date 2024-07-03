@@ -13,7 +13,7 @@ use JsonSerializable;
 class ControllerOutputData implements JsonSerializable
 {
     public string $message;
-    public ResponseStatusEnum $status;
+    public string $status;
     /**
      * @var T|null
      */
@@ -22,19 +22,19 @@ class ControllerOutputData implements JsonSerializable
     public function __construct(string $message, ResponseStatusEnum $status, mixed $data = null)
     {
         $this->message = $message;
-        $this->status = $status;
+        $this->status = $status->value;
         $this->data = $data;
     }
 
     /**
      * @inheritDoc
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): string
     {
-        return [
+        return json_encode([
             'message' => $this->message,
             'status' => $this->status,
-            'data' => $this->data,
-        ];
+            'data' => $this->data
+        ]);
     }
 }

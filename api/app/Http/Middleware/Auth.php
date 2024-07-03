@@ -17,6 +17,7 @@ class Auth
      * @param Request $request
      * @param Closure $next
      * @return mixed
+     * @throws JWTException
      */
     public function handle(Request $request, Closure $next)
     {
@@ -24,7 +25,7 @@ class Auth
 
         $accessToken = $request->cookie(config('jwt.cookie.access_token_name'));
         if (!$accessToken) {
-            return response()->json(['error' => 'Token not provided'], 401);
+            throw new JWTException();
         }
 
         JWTAuth::setToken($accessToken);

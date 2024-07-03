@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use app\Contracts\Services\AuthServiceContract;
+
 abstract class Controller
 {
-    protected mixed $service;
+    protected AuthServiceContract $service;
 
     public function __construct(mixed $service)
     {

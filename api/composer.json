@@ -10,6 +10,7 @@
         "backpack/theme-tabler": "^1.2",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
+        "predis/predis": "^2.2",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
@@ -58,6 +59,9 @@
         "lint": [
             "vendor/bin/phpcs --standard=phpcs.xml app || true",
             "vendor/bin/phpcbf --standard=phpcs.xml app"
+        ],
+        "generate-helpers": [
+            "php artisan generate:ide-helpers"
         ]
     },
     "extra": {

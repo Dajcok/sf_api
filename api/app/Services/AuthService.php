@@ -2,55 +2,57 @@
 
 namespace App\Services;
 
-use App\Contracts\AuthServiceInterface;
-use App\DTO\Input\AuthTokenInputData;
-use App\DTO\Input\RefreshTokenInputData;
-use App\DTO\Input\UserChangePasswordInputData;
-use App\DTO\Input\UserCreateInputData;
-use App\DTO\Input\UserForgotPasswordInputData;
-use App\DTO\Input\UserLoginInputData;
-use App\DTO\Input\UserResetPasswordInputData;
-use App\DTO\Input\UserVerifyEmailInputData;
+use App\Contracts\Services\AuthServiceContract;
+use App\DTO\Input\Auth\AuthTokenClaimsData;
+use App\DTO\Input\Auth\RefreshTokenInputData;
+use App\DTO\Input\Auth\UserChangePasswordInputData;
+use App\DTO\Input\Auth\UserCreateInputData;
+use App\DTO\Input\Auth\UserLoginInputData;
+use App\DTO\Input\Auth\UserResetPasswordInputData;
+use App\DTO\Input\Auth\UserVerifyEmailInputData;
 use App\DTO\Output\AuthenticatedOutputData;
-use App\Exceptions\Api\BadRequest;
 use App\Exceptions\Api\Unauthorized;
 use App\Models\User;
-use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Support\Facades\Hash;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Redis;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
-class AuthService implements AuthServiceInterface
+class AuthService implements AuthServiceContract
 {
+    /**
+     * Generate JWT token from user claims.
+     * Claims object is defined by AuthTokenClaimsData.
+     *
+     *
+     * @param User $user
+     * @return string
+     * @see AuthTokenClaimsData
+     */
+    private function generateTokenFromUser(JWTSubject $user): string
+    {
+        $claimsData = new AuthTokenClaimsData(email: $user->email, id: (string)$user->id);
+        return JWTAuth::claims(['email' => $claimsData->email, 'id' => $claimsData->id])->fromUser($user);
+    }
+
     /**
      * {@inheritDoc}
      */
     public function register(UserCreateInputData $payload): AuthenticatedOutputData
     {
-        try {
-            $user = User::create([
-                'name' => $payload->name,
-                'email' => $payload->email,
-                'password' => Hash::make($payload->password),
-            ]);
+        $user = User::create([
+            'name' => $payload->name,
+            'email' => $payload->email,
+            'password' => Hash::make($payload->password),
+        ]);
 
-            $tokenData = new AuthTokenInputData(email: $user->email, id: $user->id);
+        $accessToken = $this->generateTokenFromUser($user);
+        $refreshToken = $this->generateTokenFromUser($user);
 
-            $accessToken = JWTAuth::claims(['email' => $tokenData->email, 'id' => $tokenData->id])->fromUser($user);
-            $refreshToken = JWTAuth::claims(['email' => $tokenData->email, 'id' => $tokenData->id])->fromUser($user);
+        // Store for 7 days
+        Redis::connection()->set('refresh_token_usr:' . $user->id, $refreshToken, 'EX', 604800);
 
-            // Store for 7 days
-            Redis::connection()->set('refresh_token_usr:' . $user->id, $refreshToken, 'EX', 604800);
-
-            return new AuthenticatedOutputData(accessToken: $accessToken, refreshToken: $refreshToken);
-        } catch (QueryException $e) {
-            //Unique constraint violation
-            if ($e->errorInfo[1] == 1062) {
-                throw new BadRequest('User with this email already exists.');
-            }
-
-            throw $e;
-        }
+        return new AuthenticatedOutputData(accessToken: $accessToken, refreshToken: $refreshToken);
     }
 
     /**
@@ -63,11 +65,17 @@ class AuthService implements AuthServiceInterface
             'password' => $payload->password,
         ];
 
-        if (!$token = JWTAuth::attempt($credentials)) {
-            throw new Unauthorized();
+        if (!$accessToken = JWTAuth::attempt($credentials)) {
+            throw new Unauthorized("Invalid credentials");
         }
 
-        return new AuthenticatedOutputData(accessToken: $token, refreshToken: $token);
+        $user = JWTAuth::user();
+        $refreshToken = $this->generateTokenFromUser($user);
+
+        return new AuthenticatedOutputData(
+            accessToken: $accessToken,
+            refreshToken: $refreshToken,
+        );
     }
 
     /**
@@ -75,23 +83,26 @@ class AuthService implements AuthServiceInterface
      */
     public function refreshToken(RefreshTokenInputData $payload): AuthenticatedOutputData
     {
-        $userId = Redis::connection()->get('refresh_token_usr:' . $payload->usr->id);
+        $tokenData = JWTAuth::setToken($payload->refreshToken)->getPayload();
+        $userId = $tokenData->get('id');
+        $user = User::find($userId);
 
-        if (!$userId) {
+        $currentStoredToken = Redis::connection()->get('refresh_token_usr:' . $user->id);
+
+        if (!$currentStoredToken) {
             throw new Unauthorized('Invalid or expired refresh token');
         }
 
-        $user = User::find($userId);
+        if ($currentStoredToken !== $payload->refreshToken) {
+            throw new Unauthorized('Invalid or expired refresh token');
+        }
 
-        $tokenData = new AuthTokenInputData($user->email, (string)$user->id);
-
-        $newAccessToken = JWTAuth::claims(['email' => $tokenData->email, 'id' => $tokenData->id])->fromUser($user);
-        $newRefreshToken = JWTAuth::claims(['email' => $tokenData->email, 'id' => $tokenData->id])->fromUser($user);
+        $newAccessToken = $this->generateTokenFromUser($user);
+        $newRefreshToken = $this->generateTokenFromUser($user);
 
         // Aktualizácia refresh tokenu v Redis
         Redis::connection()->command('DEL', ['refresh_token:' . $payload->refreshToken]);
         Redis::connection()->set('refresh_token:' . $newRefreshToken, $user->id, 'EX', 604800);
-
         return new AuthenticatedOutputData($newAccessToken, $newRefreshToken);
     }
 

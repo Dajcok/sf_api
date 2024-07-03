@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\DTO\Input\UserCreateInputData;
+use App\DTO\Input\Auth\UserCreateInputData;
 use Carbon\Carbon;
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

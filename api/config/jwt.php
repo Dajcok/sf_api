@@ -296,6 +296,15 @@ return [
         'storage' => Tymon\JWTAuth\Providers\Storage\Illuminate::class,
     ],
 
+    /*
+    |-------------------------------------------------------------------------
+    | JWT Cookie options
+    |-------------------------------------------------------------------------
+    |
+    | Specify attributes of the JWT cookie stored in the Set-Cookie header of response to the client.
+    |
+    */
+
     'cookie' => [
         'access_token_name' => env('JWT_ACCESS_NAME', 'access_token'),
         'refresh_token_name' => env('JWT_REFRESH_NAME', 'refresh_token'),

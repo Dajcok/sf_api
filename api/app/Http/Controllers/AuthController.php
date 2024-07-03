@@ -2,24 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use app\Contracts\Services\AuthServiceContract;
 use App\DTO\Output\AuthenticatedOutputData;
+use App\Exceptions\Api\BadRequest;
+use App\Exceptions\Api\Unauthorized;
+use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserLoginRequest;
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use JWTCookieOptions;
-use JWTCookieTypeEnum;
-use Response;
+use App\Http\Controllers\Utils\JWTCookieOptions;
+use App\Enums\JWTCookieTypeEnum;
+use App\Http\Controllers\Utils\Response;
 
 class AuthController extends Controller
 {
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function register(Request $request): JsonResponse
+    protected AuthServiceContract $service;
+
+    public function __construct(AuthServiceContract $authService)
     {
-        $tokens = $this->service->register($request->all());
+        parent::__construct($authService);
+    }
+
+    /**
+     * @param UserCreateRequest $request
+     * @return JsonResponse
+     * @throws QueryException
+     */
+    public function register(UserCreateRequest $request): JsonResponse
+    {
+        $validatedData = $request->toUserCreateInputData();
+        $tokens = $this->service->register($validatedData);
 
         /**
          * @var AuthenticatedOutputData $data
@@ -41,15 +54,33 @@ class AuthController extends Controller
         );
     }
 
-    public function login(Request $request): JsonResponse
+    /**
+     * @param UserLoginRequest $request
+     * @return JsonResponse
+     * @throws Unauthorized
+     */
+    public function login(UserLoginRequest $request): JsonResponse
     {
-        $credentials = $request->only('email', 'password');
+        $validatedData = $request->toUserLoginInputData();
+        $tokens = $this->service->login($validatedData);
 
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        return response()->json(['token' => $token]);
+        /**
+         * @var AuthenticatedOutputData $data
+         */
+        return Response::send(
+            message: 'Logged in successfully',
+            data: new AuthenticatedOutputData(accessToken: $tokens->accessToken, refreshToken: $tokens->refreshToken),
+            cookies: [
+                new JWTCookieOptions(
+                    type: JWTCookieTypeEnum::ACCESS_TOKEN,
+                    value: $tokens->accessToken,
+                ),
+                new JWTCookieOptions(
+                    type: JWTCookieTypeEnum::REFRESH_TOKEN,
+                    value: $tokens->refreshToken,
+                ),
+            ]
+        );
     }
 
     public function me(): JsonResponse

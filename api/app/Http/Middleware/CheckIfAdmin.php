@@ -4,7 +4,18 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
+/**
+ * Class CheckIfAdmin
+ * Middleware for authorizing backpack admin interface.
+ * Admin interface is accessible only for users with is_admin = 1.
+ * You can find it at /admin.
+ *
+ * @package App\Http\Middleware
+ */
 class CheckIfAdmin
 {
     /**
@@ -34,10 +45,10 @@ class CheckIfAdmin
     /**
      * Answer to unauthorized access request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @return Response|RedirectResponse
      */
-    private function respondToUnauthorizedRequest($request)
+    private function respondToUnauthorizedRequest(Request $request): Response|RedirectResponse
     {
         if ($request->ajax() || $request->wantsJson()) {
             return response(trans('backpack::base.unauthorized'), 401);
@@ -49,11 +60,11 @@ class CheckIfAdmin
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param Request $request
+     * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if (backpack_auth()->guest()) {
             return $this->respondToUnauthorizedRequest($request);

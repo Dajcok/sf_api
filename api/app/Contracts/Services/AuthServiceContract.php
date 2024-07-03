@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Contracts;
+namespace app\Contracts\Services;
 
-use App\DTO\Input\RefreshTokenInputData;
-use App\DTO\Input\UserChangePasswordInputData;
-use App\DTO\Input\UserCreateInputData;
-use App\DTO\Input\UserLoginInputData;
-use App\DTO\Input\UserResetPasswordInputData;
-use App\DTO\Input\UserVerifyEmailInputData;
+use App\DTO\Input\Auth\RefreshTokenInputData;
+use App\DTO\Input\Auth\UserChangePasswordInputData;
+use App\DTO\Input\Auth\UserCreateInputData;
+use App\DTO\Input\Auth\UserLoginInputData;
+use App\DTO\Input\Auth\UserResetPasswordInputData;
+use App\DTO\Input\Auth\UserVerifyEmailInputData;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Exceptions\Api\BadRequest;
 use App\Exceptions\Api\Unauthorized;
 use Doctrine\DBAL\Query\QueryException;
 
-interface AuthServiceInterface
+interface AuthServiceContract
 {
     /**
      * Creates a user with hashed pwd and returns the access and refresh tokens.
@@ -26,7 +26,6 @@ interface AuthServiceInterface
      * @param UserCreateInputData $payload
      * @return AuthenticatedOutputData
      * @throws QueryException - if creating the user fails
-     * @throws BadRequest - if user with the email already exists
      */
     public function register(UserCreateInputData $payload): AuthenticatedOutputData;
 

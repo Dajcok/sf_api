@@ -1,13 +1,13 @@
 <?php
 
-enum ResponseStatusEnum: string
-{
-    case SUCCESS = 'success';
-    case ERROR = 'error';
-    case WARNING = 'warning';
-}
+namespace App\DTO\Output;
+
+use App\Enums\ResponseStatusEnum;
+use JsonSerializable;
 
 /**
+ * This class is used to represent response structure from controllers to client.
+ *
  * @template T
  */
 class ControllerOutputData implements JsonSerializable

@@ -41,4 +41,9 @@ class Repository implements RepositoryContract
     {
         return $this->model->destroy($id);
     }
+
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
 }

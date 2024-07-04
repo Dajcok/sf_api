@@ -16,4 +16,6 @@ interface RepositoryContract
     public function update(int $id, array $data): Model;
 
     public function delete(int $id): bool;
+
+    public function getModel(): Model;
 }

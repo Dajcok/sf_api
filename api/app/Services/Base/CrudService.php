@@ -76,4 +76,12 @@ abstract class CrudService implements CrudServiceContract
     {
         return $this->repository->delete($id);
     }
+
+    /**
+     * @return TRepository
+     */
+    public function getRepository(): RepositoryContract
+    {
+        return $this->repository;
+    }
 }

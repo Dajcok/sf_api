@@ -2,6 +2,7 @@
 
 namespace app\Contracts\Services\Abstract;
 
+use app\Contracts\Repositories\RepositoryContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -46,4 +47,11 @@ interface CrudServiceContract
      * @return true
      */
     public function delete(int $id): bool;
+
+    /**
+     * Get the repository
+     *
+     * @return RepositoryContract
+     */
+    public function getRepository(): RepositoryContract;
 }

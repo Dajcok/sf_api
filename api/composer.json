@@ -63,6 +63,16 @@
         ],
         "generate-helpers": [
             "php artisan generate:ide-helpers"
+        ],
+        "generate-swagger": [
+            "php artisan l5-swagger:generate"
+        ],
+        "recache": [
+            "composer dump-autoload",
+            "php artisan optimize:clear",
+
+            "php artisan view:clear",
+            "php artisan optimize"
         ]
     },
     "extra": {

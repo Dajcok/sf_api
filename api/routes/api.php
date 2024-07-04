@@ -15,6 +15,8 @@ Route::middleware(EnforceHeaders::Class)->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/refresh', [AuthController::class, 'refreshToken']);
     });
 
     //Protected routes

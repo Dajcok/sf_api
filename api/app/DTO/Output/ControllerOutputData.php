@@ -14,10 +14,7 @@ class ControllerOutputData implements JsonSerializable
 {
     public string $message;
     public string $status;
-    /**
-     * @var T|null
-     */
-    public mixed $data;
+    public JsonSerializable|null $data;
 
     public function __construct(string $message, ResponseStatusEnum $status, mixed $data = null)
     {
@@ -34,7 +31,7 @@ class ControllerOutputData implements JsonSerializable
         return json_encode([
             'message' => $this->message,
             'status' => $this->status,
-            'data' => $this->data
+            'data' => $this->data?->jsonSerialize()
         ]);
     }
 }

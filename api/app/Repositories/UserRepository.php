@@ -11,4 +11,28 @@ class UserRepository extends Repository implements UserRepositoryContract
     {
         parent::__construct($model) ;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create(array $data): User
+    {
+        return parent::create($data);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function update(int $id, array $data): User
+    {
+        return parent::update($id, $data);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function find(int $id): User
+    {
+        return parent::find($id);
+    }
 }

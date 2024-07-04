@@ -12,6 +12,20 @@ use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
+ * @OA\Schema(
+ *     schema="User",
+ *     type="object",
+ *     title="User",
+ *     description="User model",
+ *     required={"name", "email", "password"},
+ *     @OA\Property(property="id", type="integer", format="int64", description="ID"),
+ *     @OA\Property(property="name", type="string", description="User name"),
+ *     @OA\Property(property="email", type="string", format="email", description="User email"),
+ *     @OA\Property(property="password", type="string", format="password", description="User password"),
+ *     @OA\Property(property="is_admin", type="boolean", description="Is user admin"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", description="Creation date"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update date")
+ * )
  * @mixin Eloquent
  */
 class User extends Authenticatable implements JWTSubject

@@ -8,12 +8,12 @@ use App\Models\User;
 use App\Services\Base\CrudService;
 
 /**
- * @extends CrudService<User, UserRepositoryContract>
+ * {@inheritdoc}
  */
 class UserService extends CrudService implements UserServiceContract
 {
     /**
-     * @param UserRepositoryContract $repository
+     * {@inheritdoc}
      */
     public function __construct(UserRepositoryContract $repository)
     {
@@ -21,8 +21,7 @@ class UserService extends CrudService implements UserServiceContract
     }
 
     /**
-     * @param array $data
-     * @return User
+     * {@inheritdoc}
      */
     public function create(array $data): User
     {
@@ -30,9 +29,7 @@ class UserService extends CrudService implements UserServiceContract
     }
 
     /**
-     * @param int $id
-     * @param array $data
-     * @return User
+     * {@inheritdoc}
      */
     public function update(int $id, array $data): User
     {
@@ -40,8 +37,7 @@ class UserService extends CrudService implements UserServiceContract
     }
 
     /**
-     * @param int $id
-     * @return User
+     * {@inheritdoc}
      */
     public function find(int $id): User
     {

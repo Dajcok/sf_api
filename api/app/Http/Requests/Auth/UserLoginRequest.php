@@ -7,12 +7,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UserLoginRequest extends FormRequest
 {
-    public function authorize()
+    public function authorize(): true
     {
         return true;
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'email' => 'required|string|email|max:255',

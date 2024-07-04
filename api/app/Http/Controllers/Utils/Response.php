@@ -8,6 +8,12 @@ use Illuminate\Http\JsonResponse;
 use App\Enums\ResponseStatusEnum;
 use InvalidArgumentException;
 
+/**
+ * Class Response
+ * We use this class to send a response with a specific structure.
+ *
+ * @package App\Http\Controllers\Utils
+ */
 class Response
 {
     public static function send(

@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function me(): JsonResponse
     {
-        $user = $this->service->find(auth()->id());
+        $user = $this->service->find(auth()->id())->toArray();
 
         return Response::send(data: $user);
     }

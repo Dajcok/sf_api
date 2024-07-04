@@ -45,5 +45,5 @@ interface CrudServiceContract
      * @param int $id
      * @return true
      */
-    public function delete(int $id): true;
+    public function delete(int $id): bool;
 }

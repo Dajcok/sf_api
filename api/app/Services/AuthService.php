@@ -13,19 +13,30 @@ use App\DTO\Input\Auth\UserVerifyEmailInputData;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Exceptions\Api\Unauthorized;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+/**
+ * Service responsible for authentication logic using JWT.
+ *
+ * @implements AuthServiceContract
+ */
 class AuthService implements AuthServiceContract
 {
+    private UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * Generate JWT token from user claims.
      * Claims object is defined by AuthTokenClaimsData.
      *
      *
-     * @param User $user
+     * @param JWTSubject $user
      * @return string
      * @see AuthTokenClaimsData
      */
@@ -40,11 +51,7 @@ class AuthService implements AuthServiceContract
      */
     public function register(UserCreateInputData $payload): AuthenticatedOutputData
     {
-        $user = User::create([
-            'name' => $payload->name,
-            'email' => $payload->email,
-            'password' => Hash::make($payload->password),
-        ]);
+        $user = $this->userService->create(get_object_vars($payload));
 
         $accessToken = $this->generateTokenFromUser($user);
         $refreshToken = $this->generateTokenFromUser($user);

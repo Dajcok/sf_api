@@ -8,9 +8,9 @@ namespace App\DTO\Input\Auth;
 class AuthTokenClaimsData
 {
     public string $email;
-    public string $id;
+    public int $id;
 
-    public function __construct(string $email, string $id)
+    public function __construct(string $email, int $id)
     {
         $this->email = $email;
         $this->id = $id;

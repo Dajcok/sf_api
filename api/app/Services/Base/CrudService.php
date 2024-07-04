@@ -2,46 +2,78 @@
 
 namespace App\Services\Base;
 
+use app\Contracts\Repositories\RepositoryContract;
 use app\Contracts\Services\Abstract\CrudServiceContract;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Collection;
 
-class CrudService implements CrudServiceContract
+/**
+ * Abstract class CrudService
+ * You can override these methods in the child classes to inject business logic.
+ * Business logic overriden using these methods has to be responsible only for
+ * the current model.If you need to work with multiple models, you should create
+ * a new service implementing child CrudServices services using DI.
+ *
+ * @template TModel of Model
+ * @template TRepository of RepositoryContract
+ */
+abstract class CrudService implements CrudServiceContract
 {
-    protected Model $model;
+    /**
+     * @var TRepository
+     */
+    protected RepositoryContract $repository;
 
-    public function __construct(Model $model)
+    /**
+     * @param TRepository $repository
+     */
+    public function __construct(RepositoryContract $repository)
     {
-        $this->model = $model;
+        $this->repository = $repository;
     }
 
+    /**
+     * @return Collection<int, TModel>
+     */
     public function all(): Collection
     {
-        return $this->model->all();
+        return $this->repository->all();
     }
 
-    public function find($id): Model
+    /**
+     * @param int $id
+     * @return TModel
+     */
+    public function find(int $id): Model
     {
-        return $this->model->findOrFail($id);
+        return $this->repository->find($id);
     }
 
+    /**
+     * @param array $data
+     * @return TModel
+     */
     public function create(array $data): Model
     {
-        return $this->model->create($data);
+        return $this->repository->create($data);
     }
 
-    public function update($id, array $data): Model
+    /**
+     * @param int $id
+     * @param array $data
+     * @return TModel
+     */
+    public function update(int $id, array $data): Model
     {
-        $record = $this->model->findOrFail($id);
-        $record->update($data);
-        return $record;
+        return $this->repository->update($id, $data);
     }
 
-    public function delete($id): true
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id): bool
     {
-        $record = $this->model->findOrFail($id);
-
-        return $record->delete();
+        return $this->repository->delete($id);
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Repositories\Abstract;
 
 use app\Contracts\Repositories\RepositoryContract;
 use Illuminate\Database\Eloquent\Model;
 use Mockery;
 use tests\TestCase;
 
-class BaseRepositoryTestCase extends TestCase
+abstract class BaseRepositoryTestCase extends TestCase
 {
     protected RepositoryContract $repository;
 
@@ -17,11 +17,17 @@ class BaseRepositoryTestCase extends TestCase
         Mockery::close();
     }
 
+    /**
+     * @test
+     */
     public function testTheRepositoryImplementsTheRepositoryContract(): void
     {
         $this->assertInstanceOf(RepositoryContract::class, $this->repository);
     }
 
+    /**
+     * @test
+     */
     public function testTheRepositoryHasAModel(): void
     {
         $this->assertNotNull($this->repository->getModel());

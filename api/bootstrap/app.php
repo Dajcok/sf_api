@@ -1,11 +1,12 @@
 <?php
 
+
 use App\Exceptions\Api\ApiError;
 use App\Exceptions\Api\BadRequest;
 use App\Exceptions\Api\InternalError;
 use App\Exceptions\Api\NotFound;
 use App\Exceptions\Api\Unauthorized;
-use App\Exceptions\Api\UnsupportedMediaType;
+use App\Exceptions\Api\UnprocessableContent;
 use App\Http\Middleware\ResponseLogger;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -26,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-//        $middleware->append(ResponseLogger::class);
+        $middleware->append(ResponseLogger::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //This will ensure that duplicate exceptions are not reported
@@ -34,7 +35,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->level(ApiError::class, LogLevel::ERROR);
 
         $exceptions->render(function (ApiError $e) {
-            return Response::send($e->getCode(), $e->getMessage());
+            if ($e instanceof UnprocessableContent) {
+                return Response::send(statusCode: $e->getCode(), message: $e->getMessage(), errors: $e->getErrors());
+            }
+
+            return Response::send(statusCode: $e->getCode(), message: $e->getMessage());
         });
         $exceptions->render(function (JWTException $e) {
             //General
@@ -67,5 +72,4 @@ return Application::configure(basePath: dirname(__DIR__))
             $internalErrorExcp = new InternalError('Database error');
             return Response::send($internalErrorExcp->getCode(), $internalErrorExcp->getMessage());
         });
-        //TODO: Add more exception handlers here
     })->create();

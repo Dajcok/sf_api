@@ -7,9 +7,9 @@ namespace app\DTO\Output\Abstract;
  * Returned in all CRUD operations on the Model
  */
 
-use JsonSerializable;
+use app\Contracts\DTO\ArrayableContract;
 
-abstract class BaseModelOutputData implements JsonSerializable
+abstract class BaseModelOutputData implements ArrayableContract
 {
     public int $id;
     public string $created_at;
@@ -22,15 +22,12 @@ abstract class BaseModelOutputData implements JsonSerializable
         $this->updated_at = $updated_at;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function jsonSerialize(): string
+    public function toArray(): array
     {
-        return json_encode([
+        return [
             'id' => $this->id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
-        ]);
+        ];
     }
 }

@@ -1,13 +1,14 @@
 <?php
 
-namespace Tests\Services;
+namespace Tests\Services\Crud;
 
 use App\Repositories\UserRepository;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Tests\Mocks\Models\UserModelMock;
-use Tests\Services\Contracts\CrudServiceTestContract;
+use Tests\Services\Crud\Abstract\BaseCrudServiceTestCase;
+use Tests\Services\Crud\Abstract\Contracts\CrudServiceTestContract;
 
 class UserCrudServiceTestCase extends BaseCrudServiceTestCase implements CrudServiceTestContract
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace tests\Unit\Abstract;
+namespace Tests\Services\Crud\Abstract\Contracts;
 
-interface RepositoryTestContract
+interface CrudServiceTestContract
 {
     public function testFindModelById(): void;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Services;
+namespace Tests\Services\Crud\Abstract;
 
 use app\Contracts\Repositories\RepositoryContract;
 use Mockery;

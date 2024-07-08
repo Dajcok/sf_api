@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Hash;
+use Log;
 use App\DTO\Input\Auth\UserCreateInputData;
 use Carbon\Carbon;
-use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -89,6 +90,17 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * Set the user's password.
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setPasswordAttribute(string $value): void
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
+
+    /**
      * Create superuser
      *
      * @param UserCreateInputData $data
@@ -97,13 +109,11 @@ class User extends Authenticatable implements JWTSubject
     public static function createSuperuser(UserCreateInputData $data): User
     {
         $user = self::create([
-            'name' => $data->name,
-            'email' => $data->email,
-            'password' => bcrypt($data->password),
+            ...$data->toArray(),
             'email_verified_at' => Carbon::now(),
         ]);
 
-        $user->setIsAdminAttribute(true);
+        $user->is_admin = true;
         $user->save();
 
         Log::info('Superuser created', ['email' => $data->email]);

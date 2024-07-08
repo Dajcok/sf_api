@@ -47,6 +47,16 @@ class AuthService implements AuthServiceContract
     }
 
     /**
+     * @param string $refreshToken
+     * @param int    $userId
+     * @return void
+     */
+    private function storeRefreshToken(string $refreshToken, int $userId): void
+    {
+        Redis::connection('default')->set('refresh_token_usr:' . $userId, $refreshToken, 'EX', 604800);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function register(UserCreateInputData $payload): AuthenticatedOutputData
@@ -56,8 +66,7 @@ class AuthService implements AuthServiceContract
         $accessToken = $this->generateTokenFromUser($user);
         $refreshToken = $this->generateTokenFromUser($user);
 
-        // Store for 7 days
-        Redis::connection()->set('refresh_token_usr:' . $user->id, $refreshToken, 'EX', 604800);
+        $this->storeRefreshToken($refreshToken, $user->id);
 
         return new AuthenticatedOutputData(accessToken: $accessToken, refreshToken: $refreshToken);
     }
@@ -79,6 +88,8 @@ class AuthService implements AuthServiceContract
         $user = JWTAuth::user();
         $refreshToken = $this->generateTokenFromUser($user);
 
+        $this->storeRefreshToken($refreshToken, $user->id);
+
         return new AuthenticatedOutputData(
             accessToken: $accessToken,
             refreshToken: $refreshToken,
@@ -94,7 +105,7 @@ class AuthService implements AuthServiceContract
         $userId = $tokenData->get('id');
         $user = User::find($userId);
 
-        $currentStoredToken = Redis::connection()->get('refresh_token_usr:' . $user->id);
+        $currentStoredToken = Redis::connection('default')->get('refresh_token_usr:' . $user->id);
 
         if (!$currentStoredToken) {
             throw new Unauthorized('Invalid or expired refresh token');
@@ -108,8 +119,9 @@ class AuthService implements AuthServiceContract
         $newRefreshToken = $this->generateTokenFromUser($user);
 
         // Aktualizácia refresh tokenu v Redis
-        Redis::connection()->command('DEL', ['refresh_token:' . $payload->refreshToken]);
-        Redis::connection()->set('refresh_token:' . $newRefreshToken, $user->id, 'EX', 604800);
+        Redis::connection('default')->command('DEL', ['refresh_token:' . $payload->refreshToken]);
+        $this->storeRefreshToken($newRefreshToken, $user->id);
+
         return new AuthenticatedOutputData($newAccessToken, $newRefreshToken);
     }
 
@@ -118,7 +130,7 @@ class AuthService implements AuthServiceContract
      */
     public function logout(string $userId)
     {
-        Redis::connection()->command('DEL', ['refresh_token_usr:' . $userId]);
+        Redis::connection('default')->command('DEL', ['refresh_token_usr:' . $userId]);
     }
 
     /**

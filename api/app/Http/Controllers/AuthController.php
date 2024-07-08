@@ -5,15 +5,13 @@ namespace App\Http\Controllers;
 use app\Contracts\Services\AuthServiceContract;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Enums\JWTCookieTypeEnum;
-use App\Exceptions\Api\Unauthorized;
 use App\Http\Controllers\Utils\JWTCookieOptions;
 use App\Http\Controllers\Utils\Response;
-use app\Http\Requests\Auth\RefreshTokenRequest;
-use app\Http\Requests\Auth\UserCreateRequest;
-use app\Http\Requests\Auth\UserLoginRequest;
-use Doctrine\DBAL\Query\QueryException;
+use Auth;
+use App\Http\Requests\Auth\RefreshTokenRequest;
+use App\Http\Requests\Auth\UserCreateRequest;
+use App\Http\Requests\Auth\UserLoginRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * @OA\Tag(
@@ -66,7 +64,7 @@ class AuthController extends Controller
         $tokens = $this->service->register($validatedData);
 
         return Response::send(
-            statusCode: 201,
+            statusCode: \Symfony\Component\HttpFoundation\Response::HTTP_CREATED,
             message: 'Registered successfully',
             data: new AuthenticatedOutputData(accessToken: $tokens->accessToken, refreshToken: $tokens->refreshToken),
             cookies: [
@@ -200,7 +198,7 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        $this->service->logout();
+        $this->service->logout(Auth::user()->id);
 
         return Response::send(
             message: 'Logged out successfully',

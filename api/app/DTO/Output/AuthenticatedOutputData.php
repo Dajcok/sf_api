@@ -2,7 +2,8 @@
 
 namespace App\DTO\Output;
 
-use JsonSerializable;
+use app\Contracts\DTO\ArrayableContract;
+use InvalidArgumentException;
 
 /**
  * Class AuthenticatedOutputData that is used to return the authenticated user data from login and register endpoints
@@ -19,13 +20,17 @@ use JsonSerializable;
  *     @OA\Property(property="refresh_token", type="string", description="Refresh token")
  * )
  */
-class AuthenticatedOutputData implements JsonSerializable
+class AuthenticatedOutputData implements ArrayableContract
 {
     public string $accessToken;
     public string $refreshToken;
 
     public function __construct(string $accessToken, string $refreshToken)
     {
+        if (empty($accessToken) || empty($refreshToken)) {
+            throw new InvalidArgumentException('Access token and refresh token must not be empty');
+        }
+
         $this->accessToken = $accessToken;
         $this->refreshToken = $refreshToken;
     }
@@ -33,11 +38,11 @@ class AuthenticatedOutputData implements JsonSerializable
     /**
      * @inheritDoc
      */
-    public function jsonSerialize(): string
+    public function toArray(): array
     {
-        return json_encode([
+        return [
             'access_token' => $this->accessToken,
             'refresh_token' => $this->refreshToken
-        ]);
+        ];
     }
 }

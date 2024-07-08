@@ -1,11 +1,11 @@
 <?php
 
-namespace app\Http\Requests\Auth;
+namespace App\Http\Requests\Auth;
 
 use App\DTO\Input\Auth\UserCreateInputData;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class UserCreateRequest extends FormRequest
+class UserCreateRequest extends Request
 {
     public function authorize(): true
     {

@@ -6,7 +6,6 @@ use App\Contracts\Services\Abstract\CrudServiceContract;
 use App\Models\User;
 
 /**
- * UserServiceContract interface
  * We need to specify this interface to make sure that the UserService class
  * has correct return types for the methods. In this case, we are specifying
  * that the UserService class should have the correct return types for the

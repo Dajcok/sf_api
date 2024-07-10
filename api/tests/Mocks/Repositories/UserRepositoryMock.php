@@ -1,34 +1,41 @@
 <?php
 
-namespace Tests\Mocks\Models;
+namespace Tests\Mocks\Repositories;
 
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Mockery;
-use App\Models\User;
+use App\Repositories\UserRepository;
 use Mockery\LegacyMockInterface;
 
-class UserModelMock
+class UserRepositoryMock
 {
-    public static function create(): User|LegacyMockInterface
+    public static function create(): UserRepository|LegacyMockInterface
     {
-        $mock = Mockery::mock(User::class);
+        $mock = Mockery::mock(UserRepository::class);
 
         // Find
-        $usr = (new User())->forceFill([
-            'id' => 1,
-            'name' => 'John Doe',
-            'email' => 'john@doe.com'
-        ]);
-        //Robime koli tomu, aby sa to dalo updatovať
-        $usr->exists = true;
-        $mock->shouldReceive('findOrFail')
+        $mock->shouldReceive('find')
             ->with(1)
-            ->andReturn($usr);
+            ->andReturn((new User())->forceFill([
+                'id' => 1,
+                'name' => 'John Doe',
+                'email' => 'john@doe.com'
+            ]));
 
-        $mock->shouldReceive('findOrFail')
+        // Find
+        $mock->shouldReceive('find')
+            ->with(4)
+            ->andReturn((new User())->forceFill([
+                'id' => 4,
+                'name' => 'John Doe',
+                'email' => 'john@doe2.com'
+            ]));
+
+        $mock->shouldReceive('find')
             ->with(9999)
             ->andThrow((new ModelNotFoundException())->setModel(User::class, 9999));
 
@@ -72,6 +79,15 @@ class UserModelMock
                 'email' => 'john@doe2.com'
             ]));
 
+        // Update
+        $mock->shouldReceive('update')
+            ->with(1, ['name' => 'John Doe', 'email' => 'edited@email.com'])
+            ->andReturn((new User())->forceFill([
+                'id' => 1,
+                'name' => 'John Doe',
+                'email' => 'edited@email.com'
+            ]));
+
         $mock->shouldReceive('update')
             ->with(9999, ['name' => 'John Doe', 'email' => 'edited@email.com'])
             ->andThrow((new ModelNotFoundException())->setModel(User::class, 9999));
@@ -82,15 +98,6 @@ class UserModelMock
             ->andReturn(true);
 
         $mock->shouldReceive('delete')
-            ->with(9999)
-            ->andThrow((new ModelNotFoundException())->setModel(User::class, 9999));
-
-        //destroy
-        $mock->shouldReceive('destroy')
-            ->with(1)
-            ->andReturn(true);
-
-        $mock->shouldReceive('destroy')
             ->with(9999)
             ->andThrow((new ModelNotFoundException())->setModel(User::class, 9999));
 

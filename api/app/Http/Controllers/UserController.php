@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\DTO\Output\UserOutputData;
 use App\Http\Controllers\Utils\Response;
+use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Auth;
 use Illuminate\Http\JsonResponse;
@@ -43,16 +43,7 @@ class UserController extends Controller
      */
     public function me(): JsonResponse
     {
-        $user = Auth::user();
-        $responseData = new UserOutputData(
-            id: $user->id,
-            created_at: $user->created_at,
-            updated_at: $user->updated_at,
-            name: $user->name,
-            email: $user->email,
-            email_verified_at: $user->email_verified_at,
-        );
-
-        return Response::send(data: $responseData);
+        $responseData = new UserResource(Auth::user());
+        return \response()->json($responseData);
     }
 }

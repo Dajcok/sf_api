@@ -12,25 +12,42 @@ use App\Repositories\UserRepository;
 use App\Services\AuthService;
 use App\Services\UserService;
 use Doctrine\DBAL\Query\QueryException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Mocks\External\JWTAuthMock;
+use Tests\Mocks\External\RedisMock;
 use Tests\Mocks\Models\UserModelMock;
+use Tests\Mocks\Repositories\UserRepositoryMock;
 use tests\TestCase;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class AuthServiceTest extends TestCase
 {
-    private AuthServiceContract $service;
+    use RefreshDatabase;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->service = new AuthService(new UserService(new UserRepository(UserModelMock::create())));
-    }
+    private AuthServiceContract $service;
 
     /**
      * @throws QueryException
      */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        JWTAuthMock::create();
+        RedisMock::create();
+
+        $userService = new UserService(UserRepositoryMock::create());
+        $this->service = new AuthService($userService);
+    }
+
+    /**
+     * @throws QueryException
+     * @group auth
+     */
     public function testRegister(): void
     {
-        $payload = new UserCreateInputData(name: 'John Doe', email: 'test@example.com', password: 'password123');
+        $payload = new UserCreateInputData(name: 'John Doe', email: 'john@doe2.com', password: 'StrongPWD');
+
         $result = $this->service->register($payload);
 
         $this->assertInstanceOf(AuthenticatedOutputData::class, $result);
@@ -40,10 +57,11 @@ class AuthServiceTest extends TestCase
 
     /**
      * @throws Unauthorized
+     * @group auth
      */
     public function testLogin(): void
     {
-        $payload = new UserLoginInputData(email: 'test@example.com', password: 'password123');
+        $payload = new UserLoginInputData(email: 'john@doe2.com', password: 'StrongPWD');
         $result = $this->service->login($payload);
 
         $this->assertInstanceOf(AuthenticatedOutputData::class, $result);
@@ -53,10 +71,11 @@ class AuthServiceTest extends TestCase
 
     /**
      * @throws Unauthorized
+     * @group auth
      */
     public function testRefreshToken(): void
     {
-        $payload = new UserLoginInputData(email: 'test@example.com', password: 'password123');
+        $payload = new UserLoginInputData(email: 'john@doe2.com', password: 'StrongPWD');
         $loginResult = $this->service->login($payload);
 
         $refreshPayload = new RefreshTokenInputData(refreshToken: $loginResult->refreshToken);
@@ -69,10 +88,11 @@ class AuthServiceTest extends TestCase
 
     /**
      * @throws Unauthorized
+     * @group auth
      */
     public function testInvalidLogin(): void
     {
-        $this->expectException(Unauthorized::class);
+        $this->expectException(TokenInvalidException::class);
 
         $payload = new UserLoginInputData(email: 'invalid@example.com', password: 'invalidpassword');
         $this->service->login($payload);
@@ -80,10 +100,11 @@ class AuthServiceTest extends TestCase
 
     /**
      * @throws Unauthorized
+     * @group auth
      */
     public function testInvalidRefreshToken(): void
     {
-        $this->expectException(Unauthorized::class);
+        $this->expectException(TokenInvalidException::class);
 
         $payload = new RefreshTokenInputData(refreshToken: 'invalidtoken');
         $this->service->refreshToken($payload);

@@ -3,12 +3,14 @@
 namespace tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use \Illuminate\Testing\TestResponse;
+use Illuminate\Testing\TestResponse;
+use ReflectionClass;
 
 abstract class TestCase extends BaseTestCase
 {
     /**
      * @test
+     * @group feature
      *
      * Verifies the environment configuration so we won't run tests on the wrong environment.
      *
@@ -60,4 +62,17 @@ abstract class TestCase extends BaseTestCase
 
         return $response;
     }
+
+    /**
+     * @throws \ReflectionException
+     */
+    protected function isUnitTest(): bool
+    {
+        $reflection = new ReflectionClass($this);
+        $method = $reflection->getMethod($this->getName(false));
+        $docComment = $method->getDocComment();
+
+        return strpos($docComment, '@group unit') !== false;
+    }
+
 }

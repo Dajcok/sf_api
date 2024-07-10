@@ -22,6 +22,7 @@ class UserCrudServiceTestCase extends BaseCrudServiceTestCase implements CrudSer
     {
         $user = $this->service->find(1);
         $this->assertEquals('John Doe', $user->name);
+        $this->assertEquals('john@doe.com', $user->email);
     }
 
     public function testFindModelByIdThrowsModelNotFoundException(): void

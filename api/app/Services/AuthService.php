@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\Services\AuthServiceContract;
+use App\Contracts\Services\UserServiceContract;
 use App\DTO\Input\Auth\AuthTokenClaimsData;
 use App\DTO\Input\Auth\RefreshTokenInputData;
 use App\DTO\Input\Auth\UserChangePasswordInputData;
@@ -22,13 +23,10 @@ use Tymon\JWTAuth\Facades\JWTAuth;
  *
  * @implements AuthServiceContract
  */
-class AuthService implements AuthServiceContract
+readonly class AuthService implements AuthServiceContract
 {
-    private UserService $userService;
-
-    public function __construct(UserService $userService)
+    public function __construct(private UserServiceContract $userService)
     {
-        $this->userService = $userService;
     }
 
     /**
@@ -42,7 +40,7 @@ class AuthService implements AuthServiceContract
      */
     private function generateTokenFromUser(JWTSubject $user): string
     {
-        $claimsData = new AuthTokenClaimsData(email: $user->email, id: (string)$user->id);
+        $claimsData = new AuthTokenClaimsData(email: $user->email, id: $user->id);
         return JWTAuth::claims(['email' => $claimsData->email, 'id' => $claimsData->id])->fromUser($user);
     }
 
@@ -103,7 +101,7 @@ class AuthService implements AuthServiceContract
     {
         $tokenData = JWTAuth::setToken($payload->refreshToken)->getPayload();
         $userId = $tokenData->get('id');
-        $user = User::find($userId);
+        $user = $this->userService->find($userId);
 
         $currentStoredToken = Redis::connection('default')->get('refresh_token_usr:' . $user->id);
 
@@ -119,7 +117,7 @@ class AuthService implements AuthServiceContract
         $newRefreshToken = $this->generateTokenFromUser($user);
 
         // Aktualizácia refresh tokenu v Redis
-        Redis::connection('default')->command('DEL', ['refresh_token:' . $payload->refreshToken]);
+        Redis::connection('default')->command('DEL', ['refresh_token_usr:' . $user->id]);
         $this->storeRefreshToken($newRefreshToken, $user->id);
 
         return new AuthenticatedOutputData($newAccessToken, $newRefreshToken);

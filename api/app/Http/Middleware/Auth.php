@@ -27,7 +27,7 @@ class Auth
         // because withCookie() method is not working in the tests.
         // I did this as a temporary solution.
         // In production the cookie is working fine.
-        if(!$accessToken) {
+        if (!$accessToken) {
             $accessToken = $request->bearerToken();
         }
 

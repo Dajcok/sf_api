@@ -4,11 +4,13 @@ namespace App\DTO\Output;
 
 use app\Contracts\DTO\ArrayableContract;
 use App\Enums\ResponseStatusEnum;
+use App\Http\Requests\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
 use stdClass;
 
 /**
- * This class is used to represent response structure from controllers to client.
+ * This class is used to represent response structure from controllers to clients.
  *
  * @template T
  */
@@ -17,7 +19,7 @@ class ControllerOutputData implements JsonSerializable
     public string $message;
     public string $status;
     public array $errors = [];
-    public ArrayableContract|null $data;
+    public JsonResource|ArrayableContract|null $data;
 
     public function __construct(string $message, ResponseStatusEnum $status, mixed $data = null, array $errors = [])
     {

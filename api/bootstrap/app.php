@@ -32,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //This will ensure that duplicate exceptions are not reported
         $exceptions->dontReportDuplicates();
-        $exceptions->level(ApiError::class, LogLevel::ERROR);
+        $exceptions->level(Throwable::class, LogLevel::ERROR);
 
         $exceptions->render(function (ApiError $e) {
             if ($e instanceof UnprocessableContent) {
@@ -71,5 +71,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
             $internalErrorExcp = new InternalError('Database error');
             return Response::send($internalErrorExcp->getCode(), $internalErrorExcp->getMessage());
+        });
+
+        $exceptions->report(function (Throwable $e) {
+            //Report to Sentry
         });
     })->create();

@@ -10,7 +10,7 @@ use App\Services\Base\CrudService;
 /**
  * {@inheritdoc}
  */
-class UserService extends CrudService implements UserServiceContract
+readonly class UserService extends CrudService implements UserServiceContract
 {
     /**
      * {@inheritdoc}

@@ -2,12 +2,12 @@
 
 namespace tests\Feature;
 
-use Tests\TestCase;
+use tests\Feature\Abstract\BaseFeatureTest;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class AuthFeatureTest extends TestCase
+class AuthFeatureTest extends BaseFeatureTest
 {
     use RefreshDatabase;
 

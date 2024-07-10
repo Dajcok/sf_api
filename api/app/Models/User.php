@@ -65,32 +65,13 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 
     /**
-     * Get the isAdmin attribute.
-     *
-     * @return bool
-     */
-    public function getIsAdminAttribute(): bool
-    {
-        return (bool)$this->attributes['is_admin'];
-    }
-
-    /**
-     * Private setter for the isAdmin attribute.
-     *
-     * @param bool $value
-     * @return void
-     */
-    private function setIsAdminAttribute(bool $value): void
-    {
-        $this->attributes['is_admin'] = $value;
-    }
-
-    /**
-     * Set the user's password.
+     * Hashes and sets the user's password.
      *
      * @param string $value
      * @return void
@@ -98,27 +79,6 @@ class User extends Authenticatable implements JWTSubject
     public function setPasswordAttribute(string $value): void
     {
         $this->attributes['password'] = Hash::make($value);
-    }
-
-    /**
-     * Create superuser
-     *
-     * @param UserCreateInputData $data
-     * @return User
-     */
-    public static function createSuperuser(UserCreateInputData $data): User
-    {
-        $user = self::create([
-            ...$data->toArray(),
-            'email_verified_at' => Carbon::now(),
-        ]);
-
-        $user->is_admin = true;
-        $user->save();
-
-        Log::info('Superuser created', ['email' => $data->email]);
-
-        return $user;
     }
 
     /**

@@ -3,9 +3,9 @@
 namespace tests\Feature\E2E;
 
 use App\Models\User;
-use tests\Feature\E2E\Abstract\BaseFeatureTest;
+use tests\Feature\E2E\Abstract\BaseE2ETest;
 
-class UserFeatureTest extends BaseFeatureTest
+class UserE2ETest extends BaseE2ETest
 {
     public function testRetrieveMeUnauthorized(): void
     {

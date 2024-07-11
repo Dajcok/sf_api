@@ -12,10 +12,10 @@ use App\Services\AuthService;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
+use Tests\TestCase;
 use Tests\Mocks\External\JWTAuthMock;
 use Tests\Mocks\External\RedisMock;
 use Tests\Mocks\Repositories\UserRepositoryMock;
-use tests\TestCase;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class AuthServiceTest extends TestCase
@@ -41,7 +41,6 @@ class AuthServiceTest extends TestCase
     public function testRegister(): void
     {
         $payload = new UserCreateInputData(name: 'John Doe', email: 'john@doe2.com', password: 'StrongPWD');
-
         $result = $this->service->register($payload);
 
         $this->assertInstanceOf(AuthenticatedOutputData::class, $result);

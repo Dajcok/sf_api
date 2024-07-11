@@ -4,9 +4,9 @@ namespace tests\Feature\E2E;
 
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use tests\Feature\E2E\Abstract\BaseFeatureTest;
+use tests\Feature\E2E\Abstract\BaseE2ETest;
 
-class AuthFeatureTest extends BaseFeatureTest
+class AuthE2ETest extends BaseE2ETest
 {
     public function testRegisterInvalidEmail(): void
     {

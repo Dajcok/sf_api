@@ -5,7 +5,7 @@ namespace tests\Feature\Models;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use tests\Feature\Models\Abstract\BaseModelFeatureTestContract;
-use tests\TestCase;
+use Tests\TestCase;
 
 class UserModelFeatureTest extends TestCase implements BaseModelFeatureTestContract
 {

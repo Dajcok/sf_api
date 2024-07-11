@@ -77,9 +77,7 @@
             "php artisan optimize"
         ],
         "test:unit":  [
-            "export IS_UNIT_TEST=1",
-            "vendor/bin/phpunit --testsuite Unit",
-            "unset IS_UNIT_TEST"
+            "vendor/bin/phpunit --testsuite Unit"
         ],
         "test:feature":  [
             "vendor/bin/phpunit --testsuite Feature"

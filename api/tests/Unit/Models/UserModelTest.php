@@ -3,12 +3,14 @@
 namespace Tests\Unit\Models;
 
 use App\Models\User;
-use tests\TestCase;
+use DB;
+use Tests\TestCase;
 
 class UserModelTest extends TestCase
 {
     public function testTheUserModelHasTheCorrectFillableProperties(): void
     {
+        echo DB::getDefaultConnection() . PHP_EOL;
         $user = new User();
         $this->assertEquals(['name', 'email', 'password'], $user->getFillable());
     }

@@ -19,17 +19,6 @@ services:
     build:
       context: api
       dockerfile: Dockerfile
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: sf_db
-      DB_PORT: 5432
-      DB_DATABASE: sf_db
-      DB_USERNAME: admin
-      DB_PASSWORD: StrongPWD1
-
-      CACHE_DRIVER: redis
-      REDIS_HOST: sf_cache
-      REDIS_PORT: 6379
     depends_on:
       - sf_db
       - sf_cache

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use app\Contracts\Repositories\UserRepositoryContract;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Resources\UserResource;
 use Auth;

@@ -72,15 +72,22 @@
         "recache": [
             "composer dump-autoload",
             "php artisan optimize:clear",
+            "php artisan config:clear --env=testing",
 
             "php artisan view:clear",
             "php artisan optimize"
         ],
         "test:unit":  [
-            "vendor/bin/phpunit --testsuite Unit"
+            "php artisan config:cache --env=testing",
+            "vendor/bin/phpunit --testsuite Unit",
+            "php artisan config:clear --env=testing",
+            "php artisan config:cache"
         ],
         "test:feature":  [
-            "vendor/bin/phpunit --testsuite Feature"
+            "php artisan config:cache --env=testing",
+            "vendor/bin/phpunit --testsuite Feature",
+            "php artisan config:clear --env=testing",
+            "php artisan config:cache"
         ]
     },
     "extra": {

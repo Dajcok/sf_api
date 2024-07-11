@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Eloquent;
 use Hash;
 use Log;
@@ -18,7 +19,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  *     type="object",
  *     title="User",
  *     description="User model",
- *     required={"name", "email", "password"},
+ *     required={
+    use CrudTrait;"name", "email", "password"},
  *     @OA\Property(property="id", type="integer", format="int64", description="ID"),
  *     @OA\Property(property="name", type="string", description="User name"),
  *     @OA\Property(property="email", type="string", format="email", description="User email"),
@@ -33,6 +35,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory;
     use Notifiable;
+    use CrudTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -43,6 +46,8 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'is_admin',
+        'is_anonymous'
     ];
 
     /**

@@ -10,9 +10,10 @@ class UserModelTest extends TestCase
 {
     public function testTheUserModelHasTheCorrectFillableProperties(): void
     {
+        echo env('DB_CONNECTION') . PHP_EOL;
         echo DB::getDefaultConnection() . PHP_EOL;
         $user = new User();
-        $this->assertEquals(['name', 'email', 'password'], $user->getFillable());
+        $this->assertEquals(['name', 'email', 'password', 'is_admin', 'is_anonymous'], $user->getFillable());
     }
 
     public function testTheUserModelHasTheCorrectHiddenProperties(): void

@@ -5,7 +5,7 @@ namespace App\Http\Requests\Auth;
 use App\DTO\Input\Auth\UserCreateInputData;
 use App\Http\Requests\Request;
 
-class UserCreateRequest extends Request
+class RegisterRequest extends Request
 {
     public function authorize(): true
     {

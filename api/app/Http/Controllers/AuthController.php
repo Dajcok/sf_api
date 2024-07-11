@@ -9,8 +9,8 @@ use App\Enums\JWTCookieTypeEnum;
 use App\Exceptions\Api\Unauthorized;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\Auth\RefreshTokenRequest;
-use App\Http\Requests\Auth\UserCreateRequest;
-use App\Http\Requests\Auth\UserLoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\LoginRequest;
 use Auth;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -59,7 +59,7 @@ class AuthController extends Controller
      * )
      * @throws QueryException
      */
-    public function register(UserCreateRequest $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
         $validatedData = $request->toUserCreateInputData();
         $tokens = $this->service->register($validatedData);
@@ -111,7 +111,7 @@ class AuthController extends Controller
      * )
      * @throws Unauthorized
      */
-    public function login(UserLoginRequest $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         $validatedData = $request->toUserLoginInputData();
         $tokens = $this->service->login($validatedData);

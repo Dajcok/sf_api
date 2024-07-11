@@ -5,7 +5,7 @@ namespace app\Http\Requests\Auth;
 use App\DTO\Input\Auth\UserLoginInputData;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserLoginRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     public function authorize(): true
     {

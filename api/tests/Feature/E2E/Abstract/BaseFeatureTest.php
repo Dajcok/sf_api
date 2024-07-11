@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Feature\Abstract;
+namespace tests\Feature\E2E\Abstract;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

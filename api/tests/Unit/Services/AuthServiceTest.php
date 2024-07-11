@@ -9,7 +9,6 @@ use App\DTO\Input\Auth\UserLoginInputData;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Exceptions\Api\Unauthorized;
 use App\Services\AuthService;
-use App\Services\UserService;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
@@ -32,8 +31,7 @@ class AuthServiceTest extends TestCase
         JWTAuthMock::create();
         RedisMock::create();
 
-        $userService = new UserService(UserRepositoryMock::create());
-        $this->service = new AuthService($userService);
+        $this->service = new AuthService(UserRepositoryMock::create());
     }
 
     /**

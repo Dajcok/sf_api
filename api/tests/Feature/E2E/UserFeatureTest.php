@@ -1,9 +1,9 @@
 <?php
 
-namespace tests\Feature;
+namespace tests\Feature\E2E;
 
 use App\Models\User;
-use tests\Feature\Abstract\BaseFeatureTest;
+use tests\Feature\E2E\Abstract\BaseFeatureTest;
 
 class UserFeatureTest extends BaseFeatureTest
 {

@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use app\Contracts\Repositories\UserRepositoryContract;
 use App\Contracts\Services\AuthServiceContract;
-use App\Contracts\Services\UserServiceContract;
 use App\DTO\Input\Auth\AuthTokenClaimsData;
 use App\DTO\Input\Auth\RefreshTokenInputData;
 use App\DTO\Input\Auth\UserCreateInputData;
@@ -21,7 +21,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
  */
 readonly class AuthService implements AuthServiceContract
 {
-    public function __construct(private UserServiceContract $userService)
+    public function __construct(private UserRepositoryContract $userRepository)
     {
     }
 
@@ -55,7 +55,7 @@ readonly class AuthService implements AuthServiceContract
      */
     public function register(UserCreateInputData $payload): AuthenticatedOutputData
     {
-        $user = $this->userService->create(get_object_vars($payload));
+        $user = $this->userRepository->create(get_object_vars($payload));
 
         $accessToken = $this->generateTokenFromUser($user);
         $refreshToken = $this->generateTokenFromUser($user);
@@ -97,7 +97,7 @@ readonly class AuthService implements AuthServiceContract
     {
         $tokenData = JWTAuth::setToken($payload->refreshToken)->getPayload();
         $userId = $tokenData->get('id');
-        $user = $this->userService->find($userId);
+        $user = $this->userRepository->find($userId);
 
         $currentStoredToken = Redis::connection('default')->get('refresh_token_usr:' . $user->id);
 

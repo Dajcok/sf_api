@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use app\Contracts\Repositories\UserRepositoryContract;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Resources\UserResource;
-use App\Services\UserService;
 use Auth;
 use Illuminate\Http\JsonResponse;
 
@@ -16,11 +16,6 @@ use Illuminate\Http\JsonResponse;
  */
 class UserController extends Controller
 {
-    public function __construct(UserService $service)
-    {
-        parent::__construct($service);
-    }
-
     /**
      * @OA\Get(
      *     path="/api/user/me/",

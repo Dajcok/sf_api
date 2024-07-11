@@ -7,7 +7,6 @@ use App\Exceptions\Api\InternalError;
 use App\Exceptions\Api\NotFound;
 use App\Exceptions\Api\Unauthorized;
 use App\Exceptions\Api\UnprocessableContent;
-use App\Http\Middleware\ResponseLogger;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -26,6 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
+    ->withMiddleware(function (Middleware $middleware) {
+    })
     ->withExceptions(function (Exceptions $exceptions) {
         //This will ensure that duplicate exceptions are not reported
         $exceptions->dontReportDuplicates();
@@ -55,7 +56,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->render(function (ModelNotFoundException $e) {
             $notFoundExcp = new NotFound(
-                `Model not found: {${$e->getModel()}} with id: {${$e->getIds()}}`
+                `{${$e->getModel()}} with id: {${$e->getIds()}} not found`
             );
 
             return Response::send($notFoundExcp->getCode(), $notFoundExcp->getMessage());

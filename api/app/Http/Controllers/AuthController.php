@@ -6,11 +6,13 @@ use app\Contracts\Services\AuthServiceContract;
 use app\DTO\Options\JWTCookieOptions;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Enums\JWTCookieTypeEnum;
+use App\Exceptions\Api\Unauthorized;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\UserCreateRequest;
 use App\Http\Requests\Auth\UserLoginRequest;
 use Auth;
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -21,11 +23,9 @@ use Illuminate\Http\JsonResponse;
  */
 class AuthController extends Controller
 {
-    protected mixed $service;
-
-    public function __construct(AuthServiceContract $authService)
+    public function __construct(protected AuthServiceContract $service)
     {
-        parent::__construct($authService);
+        parent::__construct();
     }
 
     /**
@@ -57,6 +57,7 @@ class AuthController extends Controller
      *     @OA\Response(response="422", description="Unprocessable Entity"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws QueryException
      */
     public function register(UserCreateRequest $request): JsonResponse
     {
@@ -108,6 +109,7 @@ class AuthController extends Controller
      *     @OA\Response(response="422", description="Unprocessable Entity"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws Unauthorized
      */
     public function login(UserLoginRequest $request): JsonResponse
     {
@@ -157,6 +159,7 @@ class AuthController extends Controller
      *     @OA\Response(response="422", description="Unprocessable Entity"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws Unauthorized
      */
     public function refreshToken(RefreshTokenRequest $request): JsonResponse
     {

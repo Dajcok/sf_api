@@ -1,10 +1,10 @@
 <?php
 
-namespace tests\Feature;
+namespace tests\Feature\E2E;
 
-use tests\Feature\Abstract\BaseFeatureTest;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use tests\Feature\E2E\Abstract\BaseFeatureTest;
 
 class AuthFeatureTest extends BaseFeatureTest
 {

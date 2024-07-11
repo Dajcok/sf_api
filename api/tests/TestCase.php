@@ -5,24 +5,10 @@ namespace tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Testing\TestResponse;
 use ReflectionClass;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class TestCase extends BaseTestCase
 {
-    /**
-     * @test
-     * @group feature
-     *
-     * Verifies the environment configuration so we won't run tests on the wrong environment.
-     *
-     * @return void
-     */
-    public function testEnvironmentConfiguration(): void
-    {
-        $this->assertEquals('testing', env('APP_ENV'));
-        $this->assertEquals(2, env('REDIS_DB'));
-        $this->assertEquals(3, env('REDIS_CACHE_DB'));
-    }
-
     /**
      * This assertion is crucial to verify consistency of the structure of all successfull API responses.
      *
@@ -31,7 +17,7 @@ abstract class TestCase extends BaseTestCase
      * @param array        $data
      * @return TestResponse
      */
-    protected function assertSuccessfullApiJsonStructure(TestResponse $response, int $status, array $data = []): TestResponse
+    protected function assertSuccessfullApiJsonStructure(TestResponse $response, array $data = [], int $status = Response::HTTP_OK): TestResponse
     {
         $response->assertStatus($status)
             ->assertJsonStructure([
@@ -51,7 +37,7 @@ abstract class TestCase extends BaseTestCase
      * @param array        $errors
      * @return TestResponse
      */
-    protected function assertUnsuccessfullApiJsonStructure(TestResponse $response, int $status, array $errors = []): TestResponse
+    protected function assertUnsuccessfullApiJsonStructure(TestResponse $response, array $errors = [], int $status = Response::HTTP_UNPROCESSABLE_ENTITY): TestResponse
     {
         $response->assertStatus($status)
             ->assertJsonStructure([

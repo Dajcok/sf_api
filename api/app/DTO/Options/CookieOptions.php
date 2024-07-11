@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Utils;
+namespace app\DTO\Options;
 
 use App\Enums\SameSiteEnum;
 

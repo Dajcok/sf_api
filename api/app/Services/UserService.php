@@ -5,7 +5,7 @@ namespace App\Services;
 use app\Contracts\Repositories\UserRepositoryContract;
 use App\Contracts\Services\UserServiceContract;
 use App\Models\User;
-use App\Services\Base\CrudService;
+use App\Services\Abstract\CrudService;
 
 /**
  * {@inheritdoc}

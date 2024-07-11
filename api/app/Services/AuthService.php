@@ -13,7 +13,6 @@ use App\DTO\Input\Auth\UserResetPasswordInputData;
 use App\DTO\Input\Auth\UserVerifyEmailInputData;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Exceptions\Api\Unauthorized;
-use App\Models\User;
 use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Facades\JWTAuth;

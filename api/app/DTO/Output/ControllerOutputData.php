@@ -2,10 +2,7 @@
 
 namespace App\DTO\Output;
 
-use app\Contracts\DTO\ArrayableContract;
 use App\Enums\ResponseStatusEnum;
-use App\Http\Requests\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
 use stdClass;
 
@@ -18,10 +15,10 @@ class ControllerOutputData implements JsonSerializable
 {
     public string $message;
     public string $status;
-    public array $errors = [];
-    public JsonResource|ArrayableContract|null $data;
+    public ?array $errors = null;
+    public ?array $data = null;
 
-    public function __construct(string $message, ResponseStatusEnum $status, mixed $data = null, array $errors = [])
+    public function __construct(string $message, ResponseStatusEnum $status, array $data = null, array $errors = null)
     {
         $this->message = $message;
         $this->status = $status->value;
@@ -38,7 +35,7 @@ class ControllerOutputData implements JsonSerializable
             return json_encode([
                 'message' => $this->message,
                 'status' => $this->status,
-                'data' => $this->data?->toArray() ?? new stdClass(),
+                'data' => $this->data ?? new stdClass(),
             ]);
         }
 

@@ -44,6 +44,6 @@ class UserController extends Controller
     public function me(): JsonResponse
     {
         $responseData = new UserResource(Auth::user());
-        return \response()->json($responseData);
+        return Response::send(data: $responseData->toArray());
     }
 }

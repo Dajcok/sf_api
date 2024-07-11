@@ -8,14 +8,13 @@ use App\DTO\Input\Auth\UserCreateInputData;
 use App\DTO\Input\Auth\UserLoginInputData;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Exceptions\Api\Unauthorized;
-use App\Repositories\UserRepository;
 use App\Services\AuthService;
 use App\Services\UserService;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\Mocks\External\JWTAuthMock;
 use Tests\Mocks\External\RedisMock;
-use Tests\Mocks\Models\UserModelMock;
 use Tests\Mocks\Repositories\UserRepositoryMock;
 use tests\TestCase;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
@@ -26,9 +25,6 @@ class AuthServiceTest extends TestCase
 
     private AuthServiceContract $service;
 
-    /**
-     * @throws QueryException
-     */
     public function setUp(): void
     {
         parent::setUp();
@@ -42,8 +38,8 @@ class AuthServiceTest extends TestCase
 
     /**
      * @throws QueryException
-     * @group auth
      */
+    #[Group('auth')]
     public function testRegister(): void
     {
         $payload = new UserCreateInputData(name: 'John Doe', email: 'john@doe2.com', password: 'StrongPWD');
@@ -57,8 +53,8 @@ class AuthServiceTest extends TestCase
 
     /**
      * @throws Unauthorized
-     * @group auth
      */
+    #[Group('auth')]
     public function testLogin(): void
     {
         $payload = new UserLoginInputData(email: 'john@doe2.com', password: 'StrongPWD');
@@ -71,8 +67,8 @@ class AuthServiceTest extends TestCase
 
     /**
      * @throws Unauthorized
-     * @group auth
      */
+    #[Group('auth')]
     public function testRefreshToken(): void
     {
         $payload = new UserLoginInputData(email: 'john@doe2.com', password: 'StrongPWD');
@@ -88,8 +84,8 @@ class AuthServiceTest extends TestCase
 
     /**
      * @throws Unauthorized
-     * @group auth
      */
+    #[Group('auth')]
     public function testInvalidLogin(): void
     {
         $this->expectException(TokenInvalidException::class);
@@ -100,8 +96,8 @@ class AuthServiceTest extends TestCase
 
     /**
      * @throws Unauthorized
-     * @group auth
      */
+    #[Group('auth')]
     public function testInvalidRefreshToken(): void
     {
         $this->expectException(TokenInvalidException::class);

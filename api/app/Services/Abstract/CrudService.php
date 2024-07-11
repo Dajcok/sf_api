@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Base;
+namespace App\Services\Abstract;
 
 use app\Contracts\Repositories\RepositoryContract;
 use app\Contracts\Services\Abstract\CrudServiceContract;

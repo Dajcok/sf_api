@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use app\Contracts\Services\AuthServiceContract;
+use app\DTO\Options\JWTCookieOptions;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Enums\JWTCookieTypeEnum;
-use App\Http\Controllers\Utils\JWTCookieOptions;
 use App\Http\Controllers\Utils\Response;
-use Auth;
 use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\UserCreateRequest;
 use App\Http\Requests\Auth\UserLoginRequest;
+use Auth;
 use Illuminate\Http\JsonResponse;
 
 /**

@@ -3,13 +3,10 @@
 namespace Tests\Unit\Models;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use tests\TestCase;
 
 class UserModelTest extends TestCase
 {
-    use DatabaseTransactions;
-
     public function testTheUserModelHasTheCorrectFillableProperties(): void
     {
         $user = new User();
@@ -33,18 +30,5 @@ class UserModelTest extends TestCase
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ], $user->getCasts());
-    }
-
-    public function testCreateUser(): void
-    {
-        $userPayload = [
-            'name' => 'User',
-            'email' => 'random@usermail.sk',
-            'password' => 'password',
-        ];
-        $user = User::create($userPayload);
-
-        $this->assertNotNull($user);
-        $this->assertEquals('User', $user->name);
     }
 }

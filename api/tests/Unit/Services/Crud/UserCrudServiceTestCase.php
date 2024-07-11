@@ -7,10 +7,10 @@ use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Tests\Mocks\Models\UserModelMock;
-use Tests\Services\Crud\Abstract\BaseCrudServiceTestCase;
 use Tests\Services\Crud\Abstract\Contracts\CrudServiceTestContract;
+use tests\TestCase;
 
-class UserCrudServiceTestCase extends BaseCrudServiceTestCase implements CrudServiceTestContract
+class UserCrudServiceTestCase extends TestCase implements CrudServiceTestContract
 {
     public function setUp(): void
     {

@@ -4,13 +4,10 @@ namespace tests\Feature;
 
 use tests\Feature\Abstract\BaseFeatureTest;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class AuthFeatureTest extends BaseFeatureTest
 {
-    use RefreshDatabase;
-
     public function testRegisterInvalidEmail(): void
     {
         $payload = [
@@ -22,7 +19,7 @@ class AuthFeatureTest extends BaseFeatureTest
 
         $response = $this->postJson(route('api.auth.register'), $payload);
 
-        $this->assertUnsuccessfullApiJsonStructure($response, SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY, errors: [
+        $this->assertUnsuccessfullApiJsonStructure($response, errors: [
             'email',
         ]);
     }
@@ -38,7 +35,7 @@ class AuthFeatureTest extends BaseFeatureTest
 
         $response = $this->postJson(route('api.auth.register'), $payload);
 
-        $this->assertUnsuccessfullApiJsonStructure($response, SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY, errors: [
+        $this->assertUnsuccessfullApiJsonStructure($response, errors: [
             'password',
         ]);
     }
@@ -54,7 +51,7 @@ class AuthFeatureTest extends BaseFeatureTest
 
         $response = $this->postJson(route('api.auth.register'), $payload);
 
-        $this->assertUnsuccessfullApiJsonStructure($response, SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY, errors: [
+        $this->assertUnsuccessfullApiJsonStructure($response, errors: [
             'password',
         ]);
     }
@@ -70,10 +67,10 @@ class AuthFeatureTest extends BaseFeatureTest
 
         $response = $this->postJson(route('api.auth.register'), $payload);
 
-        $this->assertSuccessfullApiJsonStructure($response, SymfonyResponse::HTTP_CREATED, [
+        $this->assertSuccessfullApiJsonStructure($response, [
             'access_token',
             'refresh_token',
-        ]);
+        ], SymfonyResponse::HTTP_CREATED);
         $this->assertNotNull($response->json('data.access_token'));
         $this->assertNotNull($response->json('data.refresh_token'));
     }
@@ -94,7 +91,7 @@ class AuthFeatureTest extends BaseFeatureTest
 
         $response = $this->postJson(route('api.auth.register'), $payload);
 
-        $this->assertUnsuccessfullApiJsonStructure($response, SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY, errors: [
+        $this->assertUnsuccessfullApiJsonStructure($response, errors: [
             'email',
         ]);
     }
@@ -113,7 +110,7 @@ class AuthFeatureTest extends BaseFeatureTest
 
         $response = $this->postJson(route('api.auth.login'), $payload);
 
-        $this->assertSuccessfullApiJsonStructure($response, SymfonyResponse::HTTP_OK, [
+        $this->assertSuccessfullApiJsonStructure($response, [
             'access_token',
             'refresh_token',
         ]);
@@ -132,7 +129,7 @@ class AuthFeatureTest extends BaseFeatureTest
             'password' => 'password123',
         ]);
 
-        $this->assertSuccessfullApiJsonStructure($loginRes, SymfonyResponse::HTTP_OK, [
+        $this->assertSuccessfullApiJsonStructure($loginRes, [
             'access_token',
             'refresh_token',
         ]);
@@ -145,7 +142,7 @@ class AuthFeatureTest extends BaseFeatureTest
             'refresh_token' => $refreshToken,
         ]);
 
-        $this->assertSuccessfullApiJsonStructure($refreshRes, SymfonyResponse::HTTP_OK, [
+        $this->assertSuccessfullApiJsonStructure($refreshRes, [
             'access_token',
             'refresh_token',
         ]);
@@ -159,24 +156,8 @@ class AuthFeatureTest extends BaseFeatureTest
             'password' => 'password123'
         ]);
 
-        $response = $this->postJson(route('api.auth.login'), [
-            'email' => $user->email,
-            'password' => 'password123',
-        ]);
+        $response = $this->asUser($user)->postJson(route('api.auth.logout'));
 
-        $this->assertSuccessfullApiJsonStructure($response, SymfonyResponse::HTTP_OK, [
-            'access_token',
-            'refresh_token',
-        ]);
-        $this->assertNotNull($response->json('data.access_token'));
-        $this->assertNotNull($response->json('data.refresh_token'));
-
-        $accessTokenValue = $response->json('data.access_token');
-
-        $response = $this->withHeaders([
-            'Authorization' => "Bearer $accessTokenValue"
-        ])->postJson(route('api.auth.logout'));
-
-        $this->assertSuccessfullApiJsonStructure($response, SymfonyResponse::HTTP_OK);
+        $this->assertSuccessfullApiJsonStructure($response);
     }
 }

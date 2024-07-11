@@ -3,23 +3,45 @@
 namespace tests\Feature\Abstract;
 
 use App\Models\User;
-use Illuminate\Testing\TestResponse;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use JWTAuth;
 use tests\TestCase;
 
 class BaseFeatureTest extends TestCase
 {
-//    protected function sendReqAsUser(string $method, string $url, array|null $data = null): TestResponse {
-//        $user = User::factory()->create([
-//            'password' => 'password123',
-//        ]);
-//
-//        $response = $this->postJson(route('api.auth.login'), [
-//            'email' => $user->email,
-//            'password' => 'password123',
-//        ]);
-//
-//        $token = $response->json('data.token');
-//
-//        return $this->withHeader('Authorization', "Bearer $token")->$method($url, $data);
-//    }
+    use RefreshDatabase;
+
+    /**
+     * Verifies the environment configuration so we won't run tests on the wrong environment.
+     *
+     * @return void
+     */
+    public function testEnvironmentConfiguration(): void
+    {
+        $this->assertEquals('testing', env('APP_ENV'));
+        $this->assertEquals(2, env('REDIS_DB'));
+        $this->assertEquals(3, env('REDIS_CACHE_DB'));
+    }
+
+    /**
+     * Returns authenticated instance of TestCase
+     *
+     * @return BaseFeatureTest
+     */
+    public function asUser(?User $user = null): BaseFeatureTest
+    {
+        if (!$user) {
+            $user = User::factory()->create([
+                'password' => 'password123',
+            ]);
+        }
+
+        $token = JWTAuth::fromUser($user);
+
+        return $this->withHeaders([
+            'Authorization' => "Bearer $token",
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ]);
+    }
 }

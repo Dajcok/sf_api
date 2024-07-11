@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Utils;
 
+use app\Contracts\DTO\ArrayableContract;
+use app\DTO\Options\CookieOptions;
+use app\DTO\Options\JWTCookieOptions;
 use App\DTO\Output\ControllerOutputData;
+use App\Enums\ResponseStatusEnum;
 use Cookie;
 use Illuminate\Http\JsonResponse;
-use App\Enums\ResponseStatusEnum;
 use InvalidArgumentException;
 
 /**
@@ -19,7 +22,7 @@ class Response
     public static function send(
         int $statusCode = \Symfony\Component\HttpFoundation\Response::HTTP_OK,
         string $message = "Ok",
-        mixed $data = null,
+        array|ArrayableContract|null $data = null,
         ResponseStatusEnum $status = null,
         /** @var CookieOptions[] | JWTCookieOptions[] $cookies */
         array $cookies = [],
@@ -51,6 +54,7 @@ class Response
             throw new InvalidArgumentException('Invalid cookie type');
         }
 
+        $data = $data instanceof ArrayableContract ? $data->toArray() : $data;
         $resBody = new ControllerOutputData($message, $status, $data, $errors);
         $response->setStatusCode($statusCode);
         $response->setContent($resBody->jsonSerialize());

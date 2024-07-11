@@ -2,7 +2,6 @@
 
 use App\Http\Middleware\Auth;
 use App\Http\Middleware\EnforceHeaders;
-use App\Http\Middleware\ParseCookies;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -26,5 +25,4 @@ Route::middleware(EnforceHeaders::Class)->group(function () {
             Route::get('/me', [UserController::class, 'me'])->name('api.user.me');
         });
     });
-
 });

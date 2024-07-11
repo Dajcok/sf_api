@@ -26,9 +26,6 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(ResponseLogger::class);
-    })
     ->withExceptions(function (Exceptions $exceptions) {
         //This will ensure that duplicate exceptions are not reported
         $exceptions->dontReportDuplicates();

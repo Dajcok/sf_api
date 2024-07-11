@@ -26,6 +26,7 @@ class BaseFeatureTest extends TestCase
     /**
      * Returns authenticated instance of TestCase
      *
+     * @param User|null $user
      * @return BaseFeatureTest
      */
     public function asUser(?User $user = null): BaseFeatureTest
@@ -38,8 +39,19 @@ class BaseFeatureTest extends TestCase
 
         $token = JWTAuth::fromUser($user);
 
-        return $this->withHeaders([
+        return $this->withRequiredHeaders()->withHeaders([
             'Authorization' => "Bearer $token",
+        ]);
+    }
+
+    /**
+     * Returns instance of TestCase with required headers
+     *
+     * @return BaseFeatureTest
+     */
+    public function withRequiredHeaders(): BaseFeatureTest
+    {
+        return $this->withHeaders([
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]);

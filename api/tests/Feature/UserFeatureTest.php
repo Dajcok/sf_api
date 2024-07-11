@@ -7,6 +7,14 @@ use tests\Feature\Abstract\BaseFeatureTest;
 
 class UserFeatureTest extends BaseFeatureTest
 {
+    public function testRetrieveMeUnauthorized(): void
+    {
+        $response = $this->withRequiredHeaders()->get(route('api.user.me'));
+
+        $this->assertUnsuccessfullApiJsonStructure($response, status: 401);
+        $this->assertEquals('Token not provided', $response->json('message'));
+    }
+
     public function testRetrieveMe(): void
     {
         $user = User::factory()->create([

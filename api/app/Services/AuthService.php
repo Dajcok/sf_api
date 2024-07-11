@@ -6,11 +6,8 @@ use App\Contracts\Services\AuthServiceContract;
 use App\Contracts\Services\UserServiceContract;
 use App\DTO\Input\Auth\AuthTokenClaimsData;
 use App\DTO\Input\Auth\RefreshTokenInputData;
-use App\DTO\Input\Auth\UserChangePasswordInputData;
 use App\DTO\Input\Auth\UserCreateInputData;
 use App\DTO\Input\Auth\UserLoginInputData;
-use App\DTO\Input\Auth\UserResetPasswordInputData;
-use App\DTO\Input\Auth\UserVerifyEmailInputData;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Exceptions\Api\Unauthorized;
 use Illuminate\Support\Facades\Redis;
@@ -128,37 +125,5 @@ readonly class AuthService implements AuthServiceContract
     public function logout(string $userId)
     {
         Redis::connection('default')->command('DEL', ['refresh_token_usr:' . $userId]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function changePassword(UserChangePasswordInputData $payload)
-    {
-        // TODO: Implement changePassword() method.
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function forgotPassword(string $email)
-    {
-        // TODO: Implement forgotPassword() method.
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function resetPassword(UserResetPasswordInputData $payload)
-    {
-        // TODO: Implement resetPassword() method.
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function verifyEmail(UserVerifyEmailInputData $payload)
-    {
-        // TODO: Implement verifyEmail() method.
     }
 }

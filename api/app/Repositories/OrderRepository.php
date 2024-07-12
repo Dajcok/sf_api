@@ -5,6 +5,9 @@ namespace App\Repositories;
 use App\Contracts\Repositories\OrderRepositoryContract;
 use App\Models\Order;
 
+/**
+ * @extends Repository<Order>
+ */
 class OrderRepository extends Repository implements OrderRepositoryContract
 {
     public function __construct(Order $model)

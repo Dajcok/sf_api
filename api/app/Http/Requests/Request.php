@@ -13,6 +13,9 @@ abstract class Request extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
-        throw new UnprocessableContent(message: 'Request failed with validation error. Check \'errors\' for details.', errors: $validator->errors()->toArray());
+        throw new UnprocessableContent(
+            message: 'Request failed with validation error. Check \'errors\' for details.',
+            errors: $validator->errors()->toArray()
+        );
     }
 }

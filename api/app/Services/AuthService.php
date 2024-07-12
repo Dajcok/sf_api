@@ -13,7 +13,6 @@ use App\Exceptions\Api\Unauthorized;
 use App\Models\User;
 use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Support\Facades\Redis;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -129,7 +128,7 @@ readonly class AuthService implements AuthServiceContract
     /**
      * {@inheritDoc}
      */
-    public function logout(string $userId)
+    public function logout(int $userId)
     {
         Redis::connection('default')->command('DEL', ['refresh_token_usr:' . $userId]);
     }

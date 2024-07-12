@@ -12,6 +12,7 @@ use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\User;
 use Auth;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -202,7 +203,9 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        $this->service->logout(Auth::user()->id);
+        /** @var User $user */
+        $user = Auth::user();
+        $this->service->logout($user->id);
 
         return Response::send(
             message: 'Logged out successfully',

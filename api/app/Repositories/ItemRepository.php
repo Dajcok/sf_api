@@ -5,6 +5,9 @@ namespace App\Repositories;
 use App\Contracts\Repositories\ItemRepositoryContract;
 use App\Models\Item;
 
+/**
+ * @extends Repository<Item>
+ */
 class ItemRepository extends Repository implements ItemRepositoryContract
 {
     public function __construct(Item $model)

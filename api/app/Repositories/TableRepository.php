@@ -5,6 +5,9 @@ namespace App\Repositories;
 use App\Contracts\Repositories\TableRepositoryContract;
 use App\Models\Table;
 
+/**
+ * @extends Repository<Table>
+ */
 class TableRepository extends Repository implements TableRepositoryContract
 {
     public function __construct(Table $model)

@@ -5,6 +5,9 @@ namespace App\Repositories;
 use App\Contracts\Repositories\RestaurantRepositoryContract;
 use App\Models\Restaurant;
 
+/**
+ * @extends Repository<Restaurant>
+ */
 class RestaurantRepository extends Repository implements RestaurantRepositoryContract
 {
     public function __construct(Restaurant $model)

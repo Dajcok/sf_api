@@ -118,4 +118,9 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+     * Anonymous user email postfix
+     * When we create anonymous users, we specify their email as UUID + postfix.
+     */
+    'anonymous_user_email_postfix' => env('ANONYMOUS_USER_EMAIL_POSTFIX', '@anonymous.com'),
 ];

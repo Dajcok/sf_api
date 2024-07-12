@@ -7,6 +7,8 @@ use App\Http\Controllers\Abstract\CRUDController;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\Order;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -22,11 +24,13 @@ class OrderController extends CRUDController
 {
     public function __construct(OrderRepositoryContract $repository, OrderResource $resource)
     {
-        parent::__construct($repository, $resource);
+        parent::__construct($repository, $resource, Order::class);
     }
 
     /**
      * Display a listing of the resource.
+     *
+     * {@inheritdoc}
      *
      * @OA\Get(
      *     tags={"Order"},
@@ -92,6 +96,7 @@ class OrderController extends CRUDController
      *     @OA\Response(response="422", description="Unprocessable Entity"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function store(StoreOrderRequest $request): JsonResponse
     {
@@ -140,7 +145,7 @@ class OrderController extends CRUDController
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
+     * @param int                $id
      * @param UpdateOrderRequest $request
      * @return JsonResponse
      *
@@ -177,6 +182,7 @@ class OrderController extends CRUDController
      *     @OA\Response(response="422", description="Unprocessable Entity"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function update(int $id, UpdateOrderRequest $request): JsonResponse
     {

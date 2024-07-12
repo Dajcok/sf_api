@@ -26,7 +26,7 @@ class Item extends Model
     protected $fillable = [
         'name',
         'price',
-        'description',
+        'ingredients',
         'restaurant_id',
     ];
 

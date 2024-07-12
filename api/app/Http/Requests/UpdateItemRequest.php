@@ -16,7 +16,6 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="name", type="string", example="Pizza"),
  *     @OA\Property(property="price", type="number", example="10.99"),
  *     @OA\Property(property="ingredients", type="string", example="Tomato, Cheese, Pepperoni"),
- *     @OA\Property(property="restaurant_id", type="number", example="1")
  * )
  */
 class UpdateItemRequest extends FormRequest
@@ -40,7 +39,6 @@ class UpdateItemRequest extends FormRequest
             'name' => 'string|max:255',
             'price' => 'numeric',
             'ingredients' => 'string',
-            'restaurant_id' => 'exists:restaurants,id'
         ];
     }
 }

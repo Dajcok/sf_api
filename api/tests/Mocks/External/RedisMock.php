@@ -27,6 +27,10 @@ class RedisMock
             ->with('DEL', ['refresh_token_usr:' . 4])
             ->andReturn(true);
 
+        $connectionMock->shouldReceive('set')
+            ->with('refresh_token_usr:5', 'mocked_token', 'EX', 604800)
+            ->andReturn(true);
+
         return $connectionMock;
     }
 }

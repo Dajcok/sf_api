@@ -5,9 +5,6 @@ namespace App\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Eloquent;
 use Hash;
-use Log;
-use App\DTO\Input\Auth\UserCreateInputData;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -23,9 +20,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  *     @OA\Property(property="name", type="string", description="User name"),
  *     @OA\Property(property="email", type="string", format="email", description="User email"),
  *     @OA\Property(property="password", type="string", format="password", description="User password"),
- *     @OA\Property(property="is_admin", type="boolean", description="Is user admin"),
  *     @OA\Property(property="created_at", type="string", format="date-time", description="Creation date"),
- *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update date")
+ *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update date"),
+ *     @OA\Property(property="restaurant_id", type="integer", description="Restaurant ID"),
  * )
  * @mixin Eloquent
  */
@@ -45,7 +42,9 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'is_admin',
-        'is_anonymous'
+        'is_anonymous',
+        'role',
+        'restaurant_id',
     ];
 
     /**
@@ -55,6 +54,9 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $hidden = [
         'password',
+        'is_anonymous',
+        'role',
+        'is_admin',
     ];
 
     /**
@@ -70,6 +72,8 @@ class User extends Authenticatable implements JWTSubject
             'is_admin' => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
+            'is_anonymous' => 'boolean',
+            'role' => 'string',
         ];
     }
 

@@ -73,6 +73,11 @@ class AuthE2ETest extends BaseE2ETest
         ], SymfonyResponse::HTTP_CREATED);
         $this->assertNotNull($response->json('data.access_token'));
         $this->assertNotNull($response->json('data.refresh_token'));
+
+        //Check if restaurant is created
+        $user = User::where('email', '=', 'test@example.com')->first();
+        $this->assertNotNull($user);
+        $this->assertNotNull($user->restaurant_id);
     }
 
     public function testRegisterExistingEmail(): void
@@ -155,5 +160,17 @@ class AuthE2ETest extends BaseE2ETest
         $response = $this->asUser()->postJson(route('api.auth.logout'));
 
         $this->assertSuccessfullApiJsonStructure($response);
+    }
+
+    public function testRegisterCustomer(): void
+    {
+        $response = $this->postJson(route('api.auth.customer'));
+
+        $this->assertSuccessfullApiJsonStructure($response, [
+            'access_token',
+            'refresh_token',
+        ], SymfonyResponse::HTTP_CREATED);
+        $this->assertNotNull($response->json('data.access_token'));
+        $this->assertNotNull($response->json('data.refresh_token'));
     }
 }

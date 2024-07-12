@@ -50,6 +50,8 @@ class JWTAuthMock
         $jwtAuthMock->shouldReceive('setToken')->with('invalidtoken')
             ->andThrow(new TokenInvalidException());
 
+        $jwtAuthMock->shouldReceive('claims')->with(['email' => 'customer@mocking.sk', 'id' => 5])->andReturnSelf();
+
 
 
         return $jwtAuthMock;

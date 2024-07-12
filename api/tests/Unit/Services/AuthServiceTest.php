@@ -102,4 +102,13 @@ class AuthServiceTest extends TestCase
         $payload = new RefreshTokenInputData(refreshToken: 'invalidtoken');
         $this->service->refreshToken($payload);
     }
+
+    public function testCreateCustomer(): void
+    {
+        $result = $this->service->createCustomer();
+
+        $this->assertInstanceOf(AuthenticatedOutputData::class, $result);
+        $this->assertNotEmpty($result->accessToken);
+        $this->assertNotEmpty($result->refreshToken);
+    }
 }

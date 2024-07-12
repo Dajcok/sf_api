@@ -12,12 +12,12 @@ use Illuminate\Foundation\Http\FormRequest;
  * @OA\Schema (
  *     title="StoreOrderRequest",
  *     description="Store Order Request",
- *     required={"restaurant_id", "created_by", "status", "total", "table_number"},
+ *     required={"restaurant_id", "created_by", "status", "total", "table_id"},
  *     @OA\Property(property="restaurant_id", type="integer", description="Restaurant ID"),
  *     @OA\Property(property="created_by", type="integer", description="User ID"),
  *     @OA\Property(property="status", type="string", description="Order status", enum={"ACTIVE", "CANCELED", "DONE"}),
  *     @OA\Property(property="total", type="number", description="Total amount"),
- *     @OA\Property(property="table_number", type="integer", description="Table number"),
+ *     @OA\Property(property="table_id", type="integer", description="Table ID"),
  *     @OA\Property(property="notes", type="string", description="Order notes")
  * )
  */
@@ -43,7 +43,7 @@ class StoreOrderRequest extends FormRequest
             'created_by' => 'required|exists:users,id',
             'status' => 'required|in:ACTIVE,CANCELED,DONE',
             'total' => 'required|numeric',
-            'table_number' => 'required|integer',
+            'table_id' => 'required|integer|exists:tables,id',
             'notes' => 'nullable|string',
         ];
     }

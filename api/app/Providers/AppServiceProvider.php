@@ -8,6 +8,8 @@ use App\Contracts\Repositories\RestaurantRepositoryContract;
 use App\Contracts\Repositories\TableRepositoryContract;
 use App\Contracts\Repositories\UserRepositoryContract;
 use App\Contracts\Services\AuthServiceContract;
+use App\Models\User;
+use App\Observers\UserObserver;
 use App\Repositories\ItemRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\RestaurantRepository;
@@ -59,6 +61,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
     }
 }

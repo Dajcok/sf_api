@@ -12,6 +12,7 @@ class UserModelFeatureTest extends TestCase implements BaseModelFeatureTestContr
     {
         $user = User::factory()->create([
             'password' => 'password123',
+            'role' => 'RESTAURANT_STAFF'
         ]);
 
         //We will make sure that the password is hashed

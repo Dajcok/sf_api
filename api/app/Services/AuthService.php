@@ -10,6 +10,7 @@ use App\DTO\Input\Auth\UserCreateInputData;
 use App\DTO\Input\Auth\UserLoginInputData;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Exceptions\Api\Unauthorized;
+use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Support\Facades\Redis;
@@ -58,7 +59,15 @@ readonly class AuthService implements AuthServiceContract
      */
     public function register(UserCreateInputData $payload): AuthenticatedOutputData
     {
-        $user = $this->userRepository->create(get_object_vars($payload));
+        $restaurant = Restaurant::create([
+            'name' => $payload->name . ' Restaurant',
+            'formatted_address' => '',
+        ]);
+
+        $user = $this->userRepository->create([
+            ...get_object_vars($payload),
+            'restaurant_id' => $restaurant->id
+        ]);
 
         $accessToken = $this->generateTokenFromUser($user);
         $refreshToken = $this->generateTokenFromUser($user);
@@ -131,5 +140,31 @@ readonly class AuthService implements AuthServiceContract
     public function logout(int $userId)
     {
         Redis::connection('default')->command('DEL', ['refresh_token_usr:' . $userId]);
+    }
+
+    public function createCustomer(): AuthenticatedOutputData
+    {
+        $email = uniqid() . config('auth.anonymous_user_email_postfix', '@example.com');
+        $password = uniqid();
+
+        //So we can mock this call easily in tests
+        if (config('app.env') === 'testing') {
+            $email = 'customer@mocking.sk';
+            $password = 'StrongPWD';
+        }
+
+        $anonymousUser = $this->userRepository->create([
+            'is_anonymous' => true,
+            'role' => 'CUSTOMER',
+            'email' => $email,
+            'password' => $password,
+        ]);
+
+        $accessToken = $this->generateTokenFromUser($anonymousUser);
+        $refreshToken = $this->generateTokenFromUser($anonymousUser);
+
+        $this->storeRefreshToken($refreshToken, $anonymousUser->id);
+
+        return new AuthenticatedOutputData(accessToken: $accessToken, refreshToken: $refreshToken);
     }
 }

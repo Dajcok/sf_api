@@ -50,4 +50,11 @@ interface AuthServiceContract
      * @param int $userId
      */
     public function logout(int $userId);
+
+    /**
+     * Creates a new anonymous user and returns the access and refresh tokens.
+     *
+     * @return AuthenticatedOutputData
+     */
+    public function createCustomer(): AuthenticatedOutputData;
 }

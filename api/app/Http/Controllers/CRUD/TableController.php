@@ -7,6 +7,8 @@ use App\Http\Controllers\Abstract\CRUDController;
 use App\Http\Resources\TableResource;
 use App\Http\Requests\StoreTableRequest;
 use App\Http\Requests\UpdateTableRequest;
+use App\Models\Table;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,11 +16,13 @@ class TableController extends CRUDController
 {
     public function __construct(TableRepositoryContract $repository, TableResource $resource)
     {
-        parent::__construct($repository, $resource);
+        parent::__construct($repository, $resource, Table::class);
     }
 
     /**
      * Display a listing of the resource.
+     *
+     * {@inheritdoc}
      *
      * @OA\Get(
      *     tags={"Table"},
@@ -84,6 +88,7 @@ class TableController extends CRUDController
      *     @OA\Response(response="404", description="Table not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function show(int $id, Request $request): JsonResponse
     {
@@ -117,6 +122,7 @@ class TableController extends CRUDController
      *     ),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function store(StoreTableRequest $request): JsonResponse
     {
@@ -158,6 +164,7 @@ class TableController extends CRUDController
      *     @OA\Response(response="404", description="Table not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function update(int $id, UpdateTableRequest $request): JsonResponse
     {
@@ -184,6 +191,7 @@ class TableController extends CRUDController
      *     @OA\Response(response="404", description="Table not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function destroy(int $id): JsonResponse
     {

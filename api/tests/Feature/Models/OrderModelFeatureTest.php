@@ -3,8 +3,6 @@
 namespace tests\Feature\Models;
 
 use App\Models\Order;
-use App\Models\Restaurant;
-use App\Models\User;
 use tests\Feature\Models\Abstract\BaseModelFeatureTestContract;
 use Tests\TestCase;
 
@@ -21,7 +19,6 @@ class OrderModelFeatureTest extends TestCase implements BaseModelFeatureTestCont
         $this->assertEquals($order->created_by, $retrievedOrder->created_by);
         $this->assertEquals($order->status, $retrievedOrder->status);
         $this->assertEquals($order->total, $retrievedOrder->total);
-        $this->assertEquals(7, $retrievedOrder->table_number);
         $this->assertEquals('Extra ketchup', $retrievedOrder->notes);
     }
 
@@ -30,7 +27,6 @@ class OrderModelFeatureTest extends TestCase implements BaseModelFeatureTestCont
         $order = Order::factory()->create();
 
         $order->update([
-            'table_number' => 8,
             'notes' => 'Extra mayo',
         ]);
 
@@ -41,7 +37,6 @@ class OrderModelFeatureTest extends TestCase implements BaseModelFeatureTestCont
         $this->assertEquals($order->created_by, $retrievedOrder->created_by);
         $this->assertEquals($order->status, $retrievedOrder->status);
         $this->assertEquals($order->total, $retrievedOrder->total);
-        $this->assertEquals(8, $retrievedOrder->table_number);
         $this->assertEquals('Extra mayo', $retrievedOrder->notes);
     }
 
@@ -68,10 +63,10 @@ class OrderModelFeatureTest extends TestCase implements BaseModelFeatureTestCont
         Order::factory(10)->create();
 
         Order::factory()->create([
-            'table_number' => 99,
+            'notes' =>  'Random',
         ]);
 
-        $orders = Order::where('table_number', 99)->get();
+        $orders = Order::where('notes', '=', 'Random')->get();
 
         $this->assertCount(1, $orders);
     }

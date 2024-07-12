@@ -23,7 +23,7 @@ class UserRepositoryMock
             ->andReturn((new User())->forceFill([
                 'id' => 1,
                 'name' => 'John Doe',
-                'email' => 'john@doe.com'
+                'email' => 'john@doe.com',
             ]));
 
         // Find
@@ -32,7 +32,7 @@ class UserRepositoryMock
             ->andReturn((new User())->forceFill([
                 'id' => 4,
                 'name' => 'John Doe',
-                'email' => 'john@doe2.com'
+                'email' => 'john@doe2.com',
             ]));
 
         $mock->shouldReceive('find')
@@ -72,7 +72,7 @@ class UserRepositoryMock
             ));
 
         $mock->shouldReceive('create')
-            ->with(['name' => 'John Doe', 'email' => 'john@doe2.com', 'password' => 'StrongPWD'])
+            ->with(['name' => 'John Doe', 'email' => 'john@doe2.com', 'password' => 'StrongPWD', 'restaurant_id' => 1,])
             ->andReturn((new User())->forceFill([
                 'id' => 4,
                 'name' => 'John Doe',
@@ -100,6 +100,21 @@ class UserRepositoryMock
         $mock->shouldReceive('delete')
             ->with(9999)
             ->andThrow((new ModelNotFoundException())->setModel(User::class, 9999));
+
+        $mock->shouldReceive('create')
+            ->with([
+                'is_anonymous' => true,
+                'role' => 'CUSTOMER',
+                'email' => 'customer@mocking.sk',
+                'password' => 'StrongPWD',
+            ])
+            ->andReturn((new User())->forceFill([
+                'id' => 5,
+                'is_anonymous' => true,
+                'role' => 'CUSTOMER',
+                'email' => 'customer@mocking.sk',
+                'password' => 'StrongPWD',
+            ]));
 
         return $mock;
     }

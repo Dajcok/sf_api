@@ -6,6 +6,8 @@ use App\Contracts\Repositories\RepositoryContract;
 use App\Http\Controllers\Abstract\CRUDController;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
+use App\Models\Item;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,7 +22,7 @@ class ItemController extends CRUDController
 {
     public function __construct(RepositoryContract $repository, JsonResource $resource)
     {
-        parent::__construct($repository, $resource);
+        parent::__construct($repository, $resource, Item::class);
     }
 
     /**
@@ -56,6 +58,7 @@ class ItemController extends CRUDController
      *     ),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function index(Request $request): JsonResponse
     {
@@ -89,6 +92,7 @@ class ItemController extends CRUDController
      *     ),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function store(StoreItemRequest $request): JsonResponse
     {
@@ -126,6 +130,7 @@ class ItemController extends CRUDController
      *     @OA\Response(response="404", description="Item not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function show(int $id, Request $request): JsonResponse
     {
@@ -167,6 +172,7 @@ class ItemController extends CRUDController
      *     @OA\Response(response="404", description="Item not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function update(int $id, UpdateItemRequest $request): JsonResponse
     {
@@ -193,6 +199,7 @@ class ItemController extends CRUDController
      *     @OA\Response(response="404", description="Item not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function destroy(int $id): JsonResponse
     {

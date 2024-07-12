@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Abstract;
 
 use App\Contracts\Repositories\RepositoryContract;
 use App\Http\Controllers\Utils\Response;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Http\Resources\BaseCollection;
 use Illuminate\Foundation\Http\FormRequest;
@@ -19,27 +22,38 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
  */
 abstract class CRUDController extends Controller
 {
+    use AuthorizesRequests;
+
     public function __construct(
         protected readonly RepositoryContract $repository,
-        protected readonly JsonResource $resource
+        protected readonly JsonResource $resource,
+        protected readonly string $modelName
     ) {
         parent::__construct();
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     protected function performStore(FormRequest $request): JsonResponse
     {
+        $this->authorize('create', $this->modelName);
         /** @var TStoreRequest $request */
         $model = $this->repository->create($request->validated());
         $resource = new $this->resource($model);
         return Response::send(SymfonyResponse::HTTP_CREATED, 'Resource created successfully.', $resource->toArray($request));
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     protected function performUpdate(int $id, FormRequest $request): JsonResponse
     {
+        $model = $this->repository->find($id);
+        $this->authorize('update', $model);
         /** @var TUpdateRequest $request */
-        $model = $this->repository->update($id, $request->validated());
-        $resource = new $this->resource($model);
-        return Response::send(SymfonyResponse::HTTP_OK, 'Resource updated successfully.', $resource->toArray($request));
+        $data = new $this->resource($this->repository->update($id, $request->validated()));
+        return Response::send(SymfonyResponse::HTTP_OK, 'Resource updated successfully.', $data->toArray($request));
     }
 
     /**
@@ -47,11 +61,16 @@ abstract class CRUDController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function index(Request $request): JsonResponse
     {
-        $data = new BaseCollection($this->repository->all());
-        return Response::send(SymfonyResponse::HTTP_OK, 'Orders retrieved successfully.', $data->toArray($request));
+        $this->authorize('viewAny', $this->modelName);
+        $items = $this->repository->all()->filter(function ($item) {
+            return auth()->user()->can('view', $item);
+        });
+        $data = new BaseCollection($items);
+        return Response::send(SymfonyResponse::HTTP_OK, 'Resources retrieved successfully.', $data->toArray($request));
     }
 
     /**
@@ -60,11 +79,14 @@ abstract class CRUDController extends Controller
      * @param int     $id
      * @param Request $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function show(int $id, Request $request): JsonResponse
     {
-        $order = new $this->resource($this->repository->find($id));
-        return Response::send(SymfonyResponse::HTTP_OK, 'Order retrieved successfully.', $order->toArray($request));
+        $model = $this->repository->find($id);
+        $this->authorize('view', $model);
+        $data = new $this->resource($model);
+        return Response::send(SymfonyResponse::HTTP_OK, 'Resource retrieved successfully.', $data->toArray($request));
     }
 
     /**
@@ -72,10 +94,13 @@ abstract class CRUDController extends Controller
      *
      * @param int $id
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function destroy(int $id): JsonResponse
     {
+        $model = $this->repository->find($id);
+        $this->authorize('delete', $model);
         $this->repository->delete($id);
-        return Response::send(SymfonyResponse::HTTP_NO_CONTENT, 'Order deleted successfully.');
+        return Response::send(SymfonyResponse::HTTP_NO_CONTENT, 'Resource deleted successfully.');
     }
 }

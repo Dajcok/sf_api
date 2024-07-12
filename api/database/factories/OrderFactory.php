@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Restaurant;
+use App\Models\Table;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,11 +21,12 @@ class OrderFactory extends Factory
     {
         $userId = User::factory()->create()->id;
         $restaurantId = Restaurant::factory()->create()->id;
+        $tableId = Table::factory()->create()->id;
 
         return [
             'status' => 'ACTIVE',
             'total' => 202.50,
-            'table_number' => 7,
+            'table_id' => $tableId,
             'notes' => 'Extra ketchup',
             'restaurant_id' => $restaurantId,
             'created_by' => $userId,

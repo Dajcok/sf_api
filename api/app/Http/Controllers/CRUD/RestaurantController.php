@@ -6,6 +6,8 @@ use App\Contracts\Repositories\RestaurantRepositoryContract;
 use App\Http\Controllers\Abstract\CRUDController;
 use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
+use App\Models\Restaurant;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,7 +16,7 @@ class RestaurantController extends CRUDController
 {
     public function __construct(RestaurantRepositoryContract $repository, JsonResource $resource)
     {
-        parent::__construct($repository, $resource);
+        parent::__construct($repository, $resource, Restaurant::class);
     }
 
     /**
@@ -50,6 +52,7 @@ class RestaurantController extends CRUDController
      *     ),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function index(Request $request): JsonResponse
     {
@@ -90,6 +93,7 @@ class RestaurantController extends CRUDController
      *     @OA\Response(response="404", description="Restaurant not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function show(int $id, Request $request): JsonResponse
     {
@@ -123,6 +127,7 @@ class RestaurantController extends CRUDController
      *     ),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function store(StoreRestaurantRequest $request): JsonResponse
     {
@@ -167,6 +172,7 @@ class RestaurantController extends CRUDController
      *     @OA\Response(response="404", description="Restaurant not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function update(int $id, UpdateRestaurantRequest $request): JsonResponse
     {
@@ -196,6 +202,7 @@ class RestaurantController extends CRUDController
      *     @OA\Response(response="404", description="Restaurant not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
+     * @throws AuthorizationException
      */
     public function destroy(int $id): JsonResponse
     {

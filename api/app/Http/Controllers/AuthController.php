@@ -6,6 +6,7 @@ use App\Contracts\Services\AuthServiceContract;
 use App\DTO\Options\JWTCookieOptions;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Enums\JWTCookieTypeEnum;
+use App\Enums\ResponseStatusEnum;
 use App\Exceptions\Api\Unauthorized;
 use App\Http\Controllers\Abstract\Controller;
 use App\Http\Controllers\Utils\Response;
@@ -217,6 +218,49 @@ class AuthController extends Controller
                 new JWTCookieOptions(
                     type: JWTCookieTypeEnum::REFRESH_TOKEN,
                     value: '',
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @return JsonResponse
+     *
+     * @OA\Post(
+     *     path="/api/auth/customer/",
+     *     description="Creates a new user with role customer and is_anonymus = true",
+     *     tags={"Auth"},
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customer created successfully",
+     *         @OA\JsonContent(
+     *             allOf={
+     *                 @OA\Schema(ref="#/components/schemas/ApiResponse"),
+     *                 @OA\Schema(
+     *                     @OA\Property(property="data", ref="#/components/schemas/AuthenticatedOutputData")
+     *                 )
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(response="500", description="Internal Server Error")
+     * )
+     */
+    public function createCustomer(): JsonResponse
+    {
+        $tokens = $this->service->createCustomer();
+
+        return Response::send(
+            statusCode: \Symfony\Component\HttpFoundation\Response::HTTP_CREATED,
+            message: 'Customer created successfully',
+            data: new AuthenticatedOutputData(accessToken: $tokens->accessToken, refreshToken: $tokens->refreshToken),
+            cookies: [
+                new JWTCookieOptions(
+                    type: JWTCookieTypeEnum::ACCESS_TOKEN,
+                    value: $tokens->accessToken,
+                ),
+                new JWTCookieOptions(
+                    type: JWTCookieTypeEnum::REFRESH_TOKEN,
+                    value: $tokens->refreshToken,
                 ),
             ]
         );

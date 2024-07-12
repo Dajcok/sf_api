@@ -5,6 +5,15 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
+/**
+ * @OA\Schema(
+ *     schema="BaseCollection",
+ *     type="object",
+ *     title="BaseCollection",
+ *     description="Base collection model",
+ *     @OA\Property(property="links", type="object", description="Links")
+ * )
+ */
 class BaseCollection extends ResourceCollection
 {
     //TODO: Pagination
@@ -18,7 +27,7 @@ class BaseCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'data' => $this->collection,
+            'items' => $this->collection,
             'links' => [
                 'self' => 'link-value',
             ],

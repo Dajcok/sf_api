@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Middleware\Auth;
 use App\Http\Middleware\EnforceHeaders;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,14 @@ Route::middleware(EnforceHeaders::Class)->group(function () {
     Route::middleware(Auth::Class)->group(function () {
         Route::prefix('user')->group(function () {
             Route::get('/me', [UserController::class, 'me'])->name('api.user.me');
+        });
+
+        Route::prefix('order')->group(function () {
+            Route::get('/', [OrderController::class, 'index'])->name('api.order.index');
+            Route::get('/{id}', [OrderController::class, 'show'])->name('api.order.show');
+            Route::post('/', [OrderController::class, 'store'])->name('api.order.store');
+            Route::put('/{id}', [OrderController::class, 'update'])->name('api.order.update');
+            Route::delete('/{id}', [OrderController::class, 'destroy'])->name('api.order.destroy');
         });
     });
 });

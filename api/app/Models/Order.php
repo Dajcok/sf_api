@@ -26,6 +26,8 @@ class Order extends Model
     protected $fillable = [
         'total',
         'status',
+        'table_number',
+        'notes',
     ];
 
     public function items(): BelongsToMany

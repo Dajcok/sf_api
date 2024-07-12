@@ -11,10 +11,17 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class CRUDController extends Controller
+/**
+ * Class CRUDController
+ * @package App\Http\Controllers\Abstract
+ * @template T of FormRequest
+ */
+abstract class CRUDController extends Controller
 {
-    public function __construct(protected RepositoryContract $repository, protected JsonResource $resource)
-    {
+    public function __construct(
+        protected readonly RepositoryContract $repository,
+        protected readonly JsonResource $resource
+    ) {
         parent::__construct();
     }
 

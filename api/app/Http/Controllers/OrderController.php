@@ -10,6 +10,12 @@ use App\Http\Resources\OrderResource;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @OA\Tag(
+ *     name="Order",
+ *     description="Endpoints for order management"
+ * )
+ */
 class OrderController extends CRUDController
 {
     public function __construct(OrderRepositoryContract $repository, OrderResource $resource)
@@ -30,9 +36,22 @@ class OrderController extends CRUDController
      *             allOf={
      *                 @OA\Schema(ref="#/components/schemas/ApiResponse"),
      *                 @OA\Schema(
-     *                     @OA\Property(property="data", ref="#/components/schemas/BaseCollection")
+     *                     @OA\Property(
+     *                         property="data",
+     *                         type="object",
+     *                         allOf={
+     *                             @OA\Schema(ref="#/components/schemas/BaseCollection"),
+     *                             @OA\Schema(
+     *                                 @OA\Property(
+     *                                     property="items",
+     *                                     type="array",
+     *                                     @OA\Items(ref="#/components/schemas/Order")
+     *                                 )
+     *                             )
+     *                         }
+     *                     )
      *                 )
-     *            }
+     *             }
      *         )
      *     ),
      *     @OA\Response(response="500", description="Internal Server Error")

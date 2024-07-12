@@ -60,9 +60,7 @@ class UserModelFeatureTest extends TestCase implements BaseModelFeatureTestContr
 
     public function testFindAll(): void
     {
-        for ($i = 0; $i < 10; $i++) {
-            User::factory()->create();
-        }
+        User::factory(10)->create();
 
         $users = User::all();
 
@@ -71,9 +69,7 @@ class UserModelFeatureTest extends TestCase implements BaseModelFeatureTestContr
 
     public function testFindAllWhere(): void
     {
-        for ($i = 0; $i < 10; $i++) {
-            User::factory()->create();
-        }
+        User::factory(10)->create();
 
         User::factory()->create([
             'name' => 'Test User',

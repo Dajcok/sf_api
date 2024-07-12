@@ -19,8 +19,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  *     type="object",
  *     title="User",
  *     description="User model",
- *     required={
-    use CrudTrait;"name", "email", "password"},
  *     @OA\Property(property="id", type="integer", format="int64", description="ID"),
  *     @OA\Property(property="name", type="string", description="User name"),
  *     @OA\Property(property="email", type="string", format="email", description="User email"),

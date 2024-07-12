@@ -1,24 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers\CRUD;
 
-use App\Contracts\Repositories\OrderRepositoryContract;
+use App\Contracts\Repositories\RestaurantRepositoryContract;
 use App\Http\Controllers\Abstract\CRUDController;
-use App\Http\Requests\Request;
-use App\Http\Requests\StoreOrderRequest;
-use App\Http\Resources\OrderResource;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\StoreRestaurantRequest;
+use App\Http\Requests\UpdateRestaurantRequest;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-/**
- * @OA\Tag(
- *     name="Order",
- *     description="Endpoints for order management"
- * )
- */
-class OrderController extends CRUDController
+class RestaurantController extends CRUDController
 {
-    public function __construct(OrderRepositoryContract $repository, OrderResource $resource)
+    public function __construct(RestaurantRepositoryContract $repository, JsonResource $resource)
     {
         parent::__construct($repository, $resource);
     }
@@ -27,11 +21,11 @@ class OrderController extends CRUDController
      * Display a listing of the resource.
      *
      * @OA\Get(
-     *     tags={"Order"},
-     *     path="/api/orders",
+     *     tags={"Restaurant"},
+     *     path="/api/restaurants",
      *     @OA\Response(
      *         response="200",
-     *         description="Orders retrieved successfully",
+     *         description="Restaurants retrieved successfully",
      *         @OA\JsonContent(
      *             allOf={
      *                 @OA\Schema(ref="#/components/schemas/ApiResponse"),
@@ -43,9 +37,9 @@ class OrderController extends CRUDController
      *                             @OA\Schema(ref="#/components/schemas/BaseCollection"),
      *                             @OA\Schema(
      *                                 @OA\Property(
-     *                                     property="items",
+     *                                     property="restaurants",
      *                                     type="array",
-     *                                     @OA\Items(ref="#/components/schemas/Order")
+     *                                     @OA\Items(ref="#/components/schemas/Restaurant")
      *                                 )
      *                             )
      *                         }
@@ -63,56 +57,16 @@ class OrderController extends CRUDController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param StoreOrderRequest|FormRequest $request
-     * @return JsonResponse
-     *
-     * @OA\Post(
-     *     tags={"Order"},
-     *     path="/api/orders",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="total", type="number"),
-     *             @OA\Property(property="status", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response="201",
-     *         description="Order created successfully",
-     *         @OA\JsonContent(
-     *             allOf={
-     *                 @OA\Schema(ref="#/components/schemas/ApiResponse"),
-     *                 @OA\Schema(
-     *                     @OA\Property(property="data", ref="#/components/schemas/Order")
-     *                 )
-     *            }
-     *         )
-     *     ),
-     *     @OA\Response(response="422", description="Unprocessable Entity"),
-     *     @OA\Response(response="500", description="Internal Server Error")
-     * )
-     */
-    public function store(StoreOrderRequest|FormRequest $request): JsonResponse
-    {
-        return parent::store($request);
-    }
-
-    /**
      * Display the specified resource.
      *
-     * {@inheritdoc}
-     *
      * @OA\Get(
-     *     tags={"Order"},
-     *     path="/api/orders/{order}",
+     *     tags={"Restaurant"},
+     *     path="/api/restaurants/{id}",
      *     @OA\Parameter(
-     *         name="order",
+     *         name="id",
      *         in="path",
      *         required=true,
-     *         description="ID of the order",
+     *         description="ID of the restaurant to retrieve",
      *         @OA\Schema(
      *             type="integer",
      *             format="int64"
@@ -120,17 +74,20 @@ class OrderController extends CRUDController
      *     ),
      *     @OA\Response(
      *         response="200",
-     *         description="Order retrieved successfully",
+     *         description="Restaurant retrieved successfully",
      *         @OA\JsonContent(
      *             allOf={
      *                 @OA\Schema(ref="#/components/schemas/ApiResponse"),
      *                 @OA\Schema(
-     *                     @OA\Property(property="data", ref="#/components/schemas/Order")
+     *                     @OA\Property(
+     *                         property="data",
+     *                         ref="#/components/schemas/Restaurant"
+     *                     )
      *                 )
      *             }
      *         )
      *     ),
-     *     @OA\Response(response="404", description="Order not found"),
+     *     @OA\Response(response="404", description="Restaurant not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
      */
@@ -140,18 +97,49 @@ class OrderController extends CRUDController
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @OA\Post(
+     *     tags={"Restaurant"},
+     *     path="/api/restaurants",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StoreRestaurantRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Restaurant created successfully",
+     *         @OA\JsonContent(
+     *             allOf={
+     *                 @OA\Schema(ref="#/components/schemas/ApiResponse"),
+     *                 @OA\Schema(
+     *                     @OA\Property(
+     *                         property="data",
+     *                         ref="#/components/schemas/Restaurant"
+     *                     )
+     *                 )
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(response="500", description="Internal Server Error")
+     * )
+     */
+    public function store(StoreRestaurantRequest $request): JsonResponse
+    {
+        return $this->performStore($request);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
-     * {@inheritdoc}
-     *
      * @OA\Put(
-     *     tags={"Order"},
-     *     path="/api/orders/{order}",
+     *     tags={"Restaurant"},
+     *     path="/api/restaurants/{id}",
      *     @OA\Parameter(
-     *         name="order",
+     *         name="id",
      *         in="path",
      *         required=true,
-     *         description="ID of the order",
+     *         description="ID of the restaurant to update",
      *         @OA\Schema(
      *             type="integer",
      *             format="int64"
@@ -159,47 +147,43 @@ class OrderController extends CRUDController
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="total", type="number"),
-     *             @OA\Property(property="status", type="string")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateRestaurantRequest")
      *     ),
      *     @OA\Response(
      *         response="200",
-     *         description="Order updated successfully",
+     *         description="Restaurant updated successfully",
      *         @OA\JsonContent(
      *             allOf={
      *                 @OA\Schema(ref="#/components/schemas/ApiResponse"),
      *                 @OA\Schema(
-     *                     @OA\Property(property="data", ref="#/components/schemas/Order")
+     *                     @OA\Property(
+     *                         property="data",
+     *                         ref="#/components/schemas/Restaurant"
+     *                     )
      *                 )
      *             }
      *         )
      *     ),
-     *     @OA\Response(response="404", description="Order not found"),
-     *     @OA\Response(response="422", description="Unprocessable Entity"),
+     *     @OA\Response(response="404", description="Restaurant not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
      */
-    public function update(int $id, FormRequest $request): JsonResponse
+    public function update(int $id, UpdateRestaurantRequest $request): JsonResponse
     {
-        return parent::update($id, $request);
+        return $this->performUpdate($id, $request);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * {@inheritdoc}
-     *
      * @OA\Delete(
-     *     tags={"Order"},
-     *     path="/api/orders/{order}",
+     *     tags={"Restaurant"},
+     *     path="/api/restaurants/{id}",
      *     @OA\Parameter(
-     *         name="order",
+     *         name="id",
      *         in="path",
      *         required=true,
-     *         description="ID of the order",
+     *         description="ID of the restaurant to delete",
      *         @OA\Schema(
      *             type="integer",
      *             format="int64"
@@ -207,9 +191,9 @@ class OrderController extends CRUDController
      *     ),
      *     @OA\Response(
      *         response="204",
-     *         description="Order deleted successfully"
+     *         description="Restaurant deleted successfully"
      *     ),
-     *     @OA\Response(response="404", description="Order not found"),
+     *     @OA\Response(response="404", description="Restaurant not found"),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
      */

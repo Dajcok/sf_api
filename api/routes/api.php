@@ -1,11 +1,14 @@
 <?php
 
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AuthController;
+use app\Http\Controllers\CRUD\ItemController;
+use app\Http\Controllers\CRUD\OrderController;
+use app\Http\Controllers\CRUD\RestaurantController;
+use app\Http\Controllers\CRUD\TableController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\Auth;
 use App\Http\Middleware\EnforceHeaders;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
 
 
 Route::middleware(EnforceHeaders::Class)->group(function () {
@@ -32,6 +35,30 @@ Route::middleware(EnforceHeaders::Class)->group(function () {
             Route::post('/', [OrderController::class, 'store'])->name('api.order.store');
             Route::put('/{id}', [OrderController::class, 'update'])->name('api.order.update');
             Route::delete('/{id}', [OrderController::class, 'destroy'])->name('api.order.destroy');
+        });
+
+        Route::prefix('item')->group(function () {
+            Route::get('/', [ItemController::class, 'index'])->name('api.item.index');
+            Route::get('/{id}', [ItemController::class, 'show'])->name('api.item.show');
+            Route::post('/', [ItemController::class, 'store'])->name('api.item.store');
+            Route::put('/{id}', [ItemController::class, 'update'])->name('api.item.update');
+            Route::delete('/{id}', [ItemController::class, 'destroy'])->name('api.item.destroy');
+        });
+
+        Route::prefix('restaurant')->group(function () {
+            Route::get('/', [RestaurantController::class, 'index'])->name('api.restaurant.index');
+            Route::get('/{id}', [RestaurantController::class, 'show'])->name('api.restaurant.show');
+            Route::post('/', [RestaurantController::class, 'store'])->name('api.restaurant.store');
+            Route::put('/{id}', [RestaurantController::class, 'update'])->name('api.restaurant.update');
+            Route::delete('/{id}', [RestaurantController::class, 'destroy'])->name('api.restaurant.destroy');
+        });
+
+        Route::prefix('table')->group(function () {
+            Route::get('/', [TableController::class, 'index'])->name('api.table.index');
+            Route::get('/{id}', [TableController::class, 'show'])->name('api.table.show');
+            Route::post('/', [TableController::class, 'store'])->name('api.table.store');
+            Route::put('/{id}', [TableController::class, 'update'])->name('api.table.update');
+            Route::delete('/{id}', [TableController::class, 'destroy'])->name('api.table.destroy');
         });
     });
 });

@@ -2,8 +2,23 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Class UpdateTableRequest
+ * @package App\Http\Requests
+ *
+ * @OA\Schema(
+ *     title="UpdateTableRequest",
+ *     description="Update Table Request",
+ *     required={},
+ *     @OA\Property(property="restaurant_id", type="integer", description="The id of the restaurant"),
+ *     @OA\Property(property="number", type="integer", description="The number of the table"),
+ *     @OA\Property(property="x", type="number", description="The x position of the table"),
+ *     @OA\Property(property="y", type="number", description="The y position of the table"),
+ * )
+ */
 class UpdateTableRequest extends FormRequest
 {
     /**
@@ -17,12 +32,15 @@ class UpdateTableRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            //
+            'restaurant_id' => 'integer|exists:restaurants,id',
+            'number' => 'integer',
+            'x' => 'numeric',
+            'y' => 'numeric',
         ];
     }
 }

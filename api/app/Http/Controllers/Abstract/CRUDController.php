@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Abstract;
 
 use App\Contracts\Repositories\RepositoryContract;
 use App\Http\Controllers\Utils\Response;
-use App\Http\Requests\Request;
+use Illuminate\Http\Request;
 use App\Http\Resources\BaseCollection;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +14,8 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 /**
  * Class CRUDController
  * @package App\Http\Controllers\Abstract
- * @template T of FormRequest
+ * @template TStoreRequest of FormRequest
+ * @template TUpdateRequest of FormRequest
  */
 abstract class CRUDController extends Controller
 {
@@ -23,6 +24,22 @@ abstract class CRUDController extends Controller
         protected readonly JsonResource $resource
     ) {
         parent::__construct();
+    }
+
+    protected function performStore(FormRequest $request): JsonResponse
+    {
+        /** @var TStoreRequest $request */
+        $model = $this->repository->create($request->validated());
+        $resource = new $this->resource($model);
+        return Response::send(SymfonyResponse::HTTP_CREATED, 'Resource created successfully.', $resource->toArray($request));
+    }
+
+    protected function performUpdate(int $id, FormRequest $request): JsonResponse
+    {
+        /** @var TUpdateRequest $request */
+        $model = $this->repository->update($id, $request->validated());
+        $resource = new $this->resource($model);
+        return Response::send(SymfonyResponse::HTTP_OK, 'Resource updated successfully.', $resource->toArray($request));
     }
 
     /**
@@ -38,18 +55,6 @@ abstract class CRUDController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param FormRequest $request
-     * @return JsonResponse
-     */
-    public function store(FormRequest $request): JsonResponse
-    {
-        $order = new $this->resource($this->repository->create($request->validated()));
-        return Response::send(SymfonyResponse::HTTP_CREATED, 'Order created successfully.', $order->toArray($request));
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param int     $id
@@ -60,19 +65,6 @@ abstract class CRUDController extends Controller
     {
         $order = new $this->resource($this->repository->find($id));
         return Response::send(SymfonyResponse::HTTP_OK, 'Order retrieved successfully.', $order->toArray($request));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param int         $id
-     * @param FormRequest $request
-     * @return JsonResponse
-     */
-    public function update(int $id, FormRequest $request): JsonResponse
-    {
-        $order = new $this->resource($this->repository->update($id, $request->validated()));
-        return Response::send(SymfonyResponse::HTTP_OK, 'Order updated successfully.', $order->toArray($request));
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace App\DTO\Output;
 
-use app\Contracts\DTO\ArrayableContract;
+use App\Contracts\DTO\ArrayableContract;
 use InvalidArgumentException;
 
 /**

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use app\Contracts\Repositories\OrderRepositoryContract;
+use App\Contracts\Repositories\OrderRepositoryContract;
 use App\Models\Order;
 
 class OrderRepository extends Repository implements OrderRepositoryContract

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use app\Contracts\Repositories\TableRepositoryContract;
+use App\Contracts\Repositories\TableRepositoryContract;
 use App\Models\Table;
 
 class TableRepository extends Repository implements TableRepositoryContract

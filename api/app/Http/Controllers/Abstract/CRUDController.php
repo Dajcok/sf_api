@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Abstract;
 
-use app\Contracts\Repositories\RepositoryContract;
-use App\Http\Controllers\Controller;
+use App\Contracts\Repositories\RepositoryContract;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\Request;
 use App\Http\Resources\BaseCollection;
@@ -21,6 +20,9 @@ class CRUDController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
@@ -30,6 +32,9 @@ class CRUDController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param FormRequest $request
+     * @return JsonResponse
      */
     public function store(FormRequest $request): JsonResponse
     {
@@ -52,6 +57,10 @@ class CRUDController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param int         $id
+     * @param FormRequest $request
+     * @return JsonResponse
      */
     public function update(int $id, FormRequest $request): JsonResponse
     {
@@ -61,6 +70,9 @@ class CRUDController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return JsonResponse
      */
     public function destroy(int $id): JsonResponse
     {

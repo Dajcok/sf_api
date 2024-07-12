@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use app\Contracts\Repositories\RestaurantRepositoryContract;
+use App\Contracts\Repositories\RestaurantRepositoryContract;
 use App\Models\Restaurant;
 
 class RestaurantRepository extends Repository implements RestaurantRepositoryContract

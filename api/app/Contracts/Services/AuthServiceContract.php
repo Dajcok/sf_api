@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Contracts\Services;
+namespace App\Contracts\Services;
 
 use App\DTO\Input\Auth\RefreshTokenInputData;
 use App\DTO\Input\Auth\UserCreateInputData;

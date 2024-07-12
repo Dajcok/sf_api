@@ -1,9 +1,14 @@
 <?php
 
-namespace app\Contracts\Repositories;
+namespace App\Contracts\Repositories;
 
 use App\Models\Table;
 
+/**
+ * Interface TableRepositoryContract
+ * @package App\Contracts\Repositories
+ * @extends RepositoryContract<Table>
+ */
 interface TableRepositoryContract extends RepositoryContract
 {
     /**

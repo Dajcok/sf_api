@@ -1,6 +1,6 @@
 <?php
 
-namespace app\DTO\Options;
+namespace App\DTO\Options;
 
 use App\Enums\JWTCookieTypeEnum;
 

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use app\Contracts\Repositories\ItemRepositoryContract;
+use App\Contracts\Repositories\ItemRepositoryContract;
 use App\Models\Item;
 
 class ItemRepository extends Repository implements ItemRepositoryContract

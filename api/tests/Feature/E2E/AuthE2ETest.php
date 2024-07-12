@@ -152,11 +152,7 @@ class AuthE2ETest extends BaseE2ETest
 
     public function testLogout(): void
     {
-        $user = User::factory()->create([
-            'password' => 'password123'
-        ]);
-
-        $response = $this->asUser($user)->postJson(route('api.auth.logout'));
+        $response = $this->asUser()->postJson(route('api.auth.logout'));
 
         $this->assertSuccessfullApiJsonStructure($response);
     }

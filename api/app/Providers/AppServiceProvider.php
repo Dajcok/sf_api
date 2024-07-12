@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use app\Contracts\Repositories\ItemRepositoryContract;
-use app\Contracts\Repositories\OrderRepositoryContract;
-use app\Contracts\Repositories\RestaurantRepositoryContract;
-use app\Contracts\Repositories\TableRepositoryContract;
-use app\Contracts\Repositories\UserRepositoryContract;
-use app\Contracts\Services\AuthServiceContract;
+use App\Contracts\Repositories\ItemRepositoryContract;
+use App\Contracts\Repositories\OrderRepositoryContract;
+use App\Contracts\Repositories\RestaurantRepositoryContract;
+use App\Contracts\Repositories\TableRepositoryContract;
+use App\Contracts\Repositories\UserRepositoryContract;
+use App\Contracts\Services\AuthServiceContract;
 use App\Repositories\ItemRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\RestaurantRepository;

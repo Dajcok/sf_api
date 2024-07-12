@@ -1,6 +1,6 @@
 <?php
 
-namespace app\DTO\Options;
+namespace App\DTO\Options;
 
 use App\Enums\SameSiteEnum;
 
@@ -8,7 +8,7 @@ class CookieOptions
 {
     public string $value;
     public string $name;
-    public string $expires;
+    public int $expires;
     public string $path;
     public string $domain;
     public bool $secure;
@@ -24,7 +24,7 @@ class CookieOptions
         bool $secure,
         bool $httpOnly,
         ?bool $raw,
-        string $expires,
+        int $expires,
         ?SameSiteEnum $sameSite
     ) {
         $this->path =  $path;

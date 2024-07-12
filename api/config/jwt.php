@@ -313,7 +313,9 @@ return [
         'secure' => env('JWT_SECURE_COOKIE', false),
         'http_only' => env('JWT_HTTP_ONLY_COOKIE', true),
         'sames_site' => env('JWT_SAME_SITE_COOKIE', 'lax'),
+        //In minutes
         'refresh_token_ttl' => env('JWT_REFRESH_TTL', 20160),
-        'access_token_ttl' => env('JWT_ACCESS_TTL', 60)
+        //In minutes
+        'access_token_ttl' => env('JWT_TTL', 60)
     ],
 ];

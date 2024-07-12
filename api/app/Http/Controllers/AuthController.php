@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use app\Contracts\Services\AuthServiceContract;
-use app\DTO\Options\JWTCookieOptions;
+use App\Contracts\Services\AuthServiceContract;
+use App\DTO\Options\JWTCookieOptions;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Enums\JWTCookieTypeEnum;
 use App\Exceptions\Api\Unauthorized;
+use App\Http\Controllers\Abstract\Controller;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RefreshTokenRequest;

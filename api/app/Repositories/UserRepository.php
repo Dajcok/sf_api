@@ -2,11 +2,20 @@
 
 namespace App\Repositories;
 
-use app\Contracts\Repositories\UserRepositoryContract;
+use App\Contracts\Repositories\UserRepositoryContract;
 use App\Models\User;
 
+/**
+ * Class UserRepository
+ * @package App\Repositories
+ * @extends Repository<User>
+ */
 class UserRepository extends Repository implements UserRepositoryContract
 {
+    /**
+     * UserRepository constructor.
+     * @param User $model
+     */
     public function __construct(User $model)
     {
         parent::__construct($model) ;

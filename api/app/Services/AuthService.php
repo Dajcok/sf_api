@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use app\Contracts\Repositories\UserRepositoryContract;
+use App\Contracts\Repositories\UserRepositoryContract;
 use App\Contracts\Services\AuthServiceContract;
 use App\DTO\Input\Auth\AuthTokenClaimsData;
 use App\DTO\Input\Auth\RefreshTokenInputData;
@@ -10,14 +10,14 @@ use App\DTO\Input\Auth\UserCreateInputData;
 use App\DTO\Input\Auth\UserLoginInputData;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Exceptions\Api\Unauthorized;
+use App\Models\User;
+use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * Service responsible for authentication logic using JWT.
- *
- * @implements AuthServiceContract
  */
 readonly class AuthService implements AuthServiceContract
 {
@@ -30,11 +30,11 @@ readonly class AuthService implements AuthServiceContract
      * Claims object is defined by AuthTokenClaimsData.
      *
      *
-     * @param JWTSubject $user
+     * @param User $user
      * @return string
      * @see AuthTokenClaimsData
      */
-    private function generateTokenFromUser(JWTSubject $user): string
+    private function generateTokenFromUser(User $user): string
     {
         $claimsData = new AuthTokenClaimsData(email: $user->email, id: $user->id);
         return JWTAuth::claims(['email' => $claimsData->email, 'id' => $claimsData->id])->fromUser($user);
@@ -47,7 +47,11 @@ readonly class AuthService implements AuthServiceContract
      */
     private function storeRefreshToken(string $refreshToken, int $userId): void
     {
-        Redis::connection('default')->set('refresh_token_usr:' . $userId, $refreshToken, 'EX', 604800);
+        /**
+         * @var PhpRedisConnection $redisConnection
+         */
+        $redisConnection = Redis::connection('default');
+        $redisConnection->set('refresh_token_usr:' . $userId, $refreshToken, 'EX', 604800);
     }
 
     /**
@@ -79,6 +83,9 @@ readonly class AuthService implements AuthServiceContract
             throw new Unauthorized("Invalid credentials");
         }
 
+        /**
+         * @var User $user
+         */
         $user = JWTAuth::user();
         $refreshToken = $this->generateTokenFromUser($user);
 

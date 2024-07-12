@@ -40,7 +40,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * {@inheritdoc}
      */
     protected $fillable = [
         'name',
@@ -53,7 +53,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * {@inheritdoc}
      */
     protected $hidden = [
         'password',
@@ -62,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * {@inheritdoc}
      */
     protected function casts(): array
     {

@@ -1,9 +1,14 @@
 <?php
 
-namespace app\Contracts\Repositories;
+namespace App\Contracts\Repositories;
 
 use App\Models\Restaurant;
 
+/**
+ * Interface RestaurantRepositoryContract
+ * @package App\Contracts\Repositories
+ * @extends RepositoryContract<Restaurant>
+ */
 interface RestaurantRepositoryContract extends RepositoryContract
 {
     /**

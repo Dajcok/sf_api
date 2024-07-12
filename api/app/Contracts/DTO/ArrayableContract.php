@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Contracts\DTO;
+namespace App\Contracts\DTO;
 
 interface ArrayableContract
 {

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use app\Contracts\Repositories\OrderRepositoryContract;
+use App\Contracts\Repositories\OrderRepositoryContract;
 use App\Http\Controllers\Abstract\CRUDController;
 use App\Http\Requests\Request;
 use App\Http\Requests\StoreOrderRequest;

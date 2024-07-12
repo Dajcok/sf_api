@@ -23,6 +23,7 @@
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
+        "nunomaduro/larastan": "^2.9",
         "phpstan/phpstan": "^1.11",
         "phpstan/phpstan-deprecation-rules": "^1.2",
         "phpstan/phpstan-strict-rules": "^1.6",
@@ -72,22 +73,31 @@
         "recache": [
             "composer dump-autoload",
             "php artisan optimize:clear",
-            "php artisan config:clear --env=testing",
-
             "php artisan view:clear",
+
             "php artisan optimize"
         ],
         "test:unit":  [
+            "php artisan config:clear",
             "php artisan config:cache --env=testing",
+
             "vendor/bin/phpunit --testsuite Unit",
+
             "php artisan config:clear --env=testing",
             "php artisan config:cache"
         ],
         "test:feature":  [
+            "php artisan config:clear",
             "php artisan config:cache --env=testing",
+
             "vendor/bin/phpunit --testsuite Feature",
+
             "php artisan config:clear --env=testing",
             "php artisan config:cache"
+        ],
+        "inspect": [
+            "php -d memory_limit=2G vendor/bin/phpstan analyse",
+            "phpcs app"
         ]
     },
     "extra": {

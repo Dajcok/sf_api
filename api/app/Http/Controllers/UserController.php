@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Abstract\Controller;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Resources\UserResource;
 use Auth;

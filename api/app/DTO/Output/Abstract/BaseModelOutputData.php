@@ -1,14 +1,13 @@
 <?php
 
-namespace app\DTO\Output\Abstract;
+namespace App\DTO\Output\Abstract;
+
+use App\Contracts\DTO\ArrayableContract;
 
 /*
  * Used to represent the data of a Model
  * Returned in all CRUD operations on the Model
  */
-
-use app\Contracts\DTO\ArrayableContract;
-
 abstract class BaseModelOutputData implements ArrayableContract
 {
     public int $id;

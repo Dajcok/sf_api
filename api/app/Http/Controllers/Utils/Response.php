@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Utils;
 
-use app\Contracts\DTO\ArrayableContract;
-use app\DTO\Options\CookieOptions;
-use app\DTO\Options\JWTCookieOptions;
+use App\Contracts\DTO\ArrayableContract;
+use App\DTO\Options\CookieOptions;
+use App\DTO\Options\JWTCookieOptions;
 use App\DTO\Output\ControllerOutputData;
 use App\Enums\ResponseStatusEnum;
 use Cookie;

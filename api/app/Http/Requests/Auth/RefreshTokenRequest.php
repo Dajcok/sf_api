@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Http\Requests\Auth;
+namespace App\Http\Requests\Auth;
 
 use App\DTO\Input\Auth\RefreshTokenInputData;
 use Illuminate\Foundation\Http\FormRequest;

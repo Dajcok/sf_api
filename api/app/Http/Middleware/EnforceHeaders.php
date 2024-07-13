@@ -12,6 +12,7 @@ class EnforceHeaders
     /**
      * Check if the Content-Type header is set to application/json and
      * Accept header is set to application/json.
+     * This is to ensure that the browser will always send pre-flight requests for mutable requests.
      *
      * @param Request $request
      * @param Closure $next

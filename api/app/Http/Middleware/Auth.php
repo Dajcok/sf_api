@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ class Auth
      * @return mixed
      * @throws JWTException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         $accessToken = $request->cookie(config('jwt.cookie.access_token_name'));
 
@@ -33,6 +35,7 @@ class Auth
             throw new JWTException();
         }
 
+        // Exception handling is done in the bootstrap/app.php file
         JWTAuth::setToken($accessToken);
         JWTAuth::authenticate();
 

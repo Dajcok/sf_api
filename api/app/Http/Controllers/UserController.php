@@ -7,6 +7,7 @@ use App\Http\Controllers\Utils\Response;
 use App\Http\Resources\UserResource;
 use Auth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
  * @OA\Tag(
@@ -36,9 +37,9 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
      */
-    public function me(): JsonResponse
+    public function me(Request $request): JsonResponse
     {
-        $responseData = new UserResource(Auth::user());
+        $responseData = new UserResource($request->user());
         return Response::send(data: $responseData->toArray());
     }
 }

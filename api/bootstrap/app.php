@@ -26,10 +26,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->throttleWithRedis();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //This will ensure that duplicate exceptions are not reported
         $exceptions->dontReportDuplicates();
+        //We want to report all exceptions
         $exceptions->level(Throwable::class, LogLevel::ERROR);
 
         $exceptions->render(function (ApiError $e) {

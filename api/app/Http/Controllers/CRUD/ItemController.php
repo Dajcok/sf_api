@@ -6,6 +6,7 @@ use App\Contracts\Repositories\RepositoryContract;
 use App\Http\Controllers\Abstract\ResourceController;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
+use App\Http\Resources\ItemCollection;
 use App\Models\Item;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,9 +21,9 @@ use Illuminate\Http\Request;
  */
 class ItemController extends ResourceController
 {
-    public function __construct(RepositoryContract $repository, JsonResource $resource)
+    public function __construct(RepositoryContract $repository, JsonResource $resource, ItemCollection $collection)
     {
-        parent::__construct($repository, $resource, Item::class);
+        parent::__construct($repository, $resource, $collection, Item::class);
     }
 
     /**

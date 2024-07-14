@@ -17,6 +17,7 @@ use Auth;
 use Exception;
 use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Support\Facades\Redis;
+use Log;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;

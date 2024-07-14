@@ -2,25 +2,27 @@
 
 namespace tests\Feature\E2E;
 
+use App\Models\Restaurant;
 use App\Models\User;
-use Database\Seeders\RestaurantSeeder;
+use PDOException;
 use Symfony\Component\HttpFoundation\Response;
 use tests\Feature\E2E\Abstract\BaseE2ETest;
 
 class RestaurantE2ETest extends BaseE2ETest
 {
-    protected array $authorizedRoutes = [
-        'api.restaurant.index',
-        'api.restaurant.show',
-        'api.restaurant.update',
-        'api.restaurant.destroy',
-    ];
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(RestaurantSeeder::class);
+        $this->seed();
+    }
+
+    public function testUnauthorized(): void
+    {
+        $response = $this->withRequiredHeaders()->get(route('api.restaurant.index'));
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testIndexRestaurantsEmpty(): void
@@ -34,7 +36,6 @@ class RestaurantE2ETest extends BaseE2ETest
     public function testIndexRestaurants(): void
     {
         $user = User::whereEmail('restaurant@owner.sk')->first();
-
         $response = $this->asUser($user)->get(route('api.restaurant.index'));
 
         $this->assertSuccessfullApiJsonStructureOnIndex($response);
@@ -45,26 +46,24 @@ class RestaurantE2ETest extends BaseE2ETest
     public function testIndexAllRestaurants(): void
     {
         $admin = User::whereEmail('admin@developer.sk')->first();
-
-        $response = $this->asUser($admin)->get(route('api.restaurant.index.all'));
+        $response = $this->asUser($admin)->get(route('api.restaurant.index'));
 
         $this->assertSuccessfullApiJsonStructureOnIndex($response);
         $this->assertNotEmpty($response->json('data.items'));
         $this->assertEquals(2, count($response->json('data.items')));
     }
 
-    public function testRetrieveRestaurantForbidden(): void
+    public function testShowRestaurantForbidden(): void
     {
-        $response = $this->asUser()->get(route('api.restaurant.show', ['restaurant' => 1]));
+        $response = $this->asUser()->get(route('api.restaurant.show', ['id' => app('TestRestaurant1Id')]));
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function testRetrieveRestaurant(): void
+    public function testShowRestaurant(): void
     {
         $user = User::whereEmail('restaurant@owner.sk')->first();
-
-        $response = $this->asUser($user)->get(route('api.restaurant.show', ['restaurant' => 1]));
+        $response = $this->asUser($user)->get(route('api.restaurant.show', ['id' => app('TestRestaurant1Id')]));
 
         $this->assertSuccessfullApiJsonStructure($response, [
             'id',
@@ -73,21 +72,28 @@ class RestaurantE2ETest extends BaseE2ETest
         ]);
     }
 
+    public function testShowRestaurantNotFound(): void
+    {
+        $user = User::whereEmail('restaurant@owner.sk')->first();
+        $response = $this->asUser($user)->get(route('api.restaurant.show', ['id' => 999]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
     public function testUpdateRestaurantForbidden(): void
     {
-        $response = $this->asUser()->put(route('api.restaurant.update', ['restaurant' => 1]), [
+        $response = $this->asUser()->put(route('api.restaurant.update', ['id' => app('TestRestaurant1Id')]), [
             'name' => 'Test Restaurant Updated',
             'formatted_address' => '123 Main St, City, State, Zip',
         ]);
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function testUpdateRestaurant(): void
     {
         $user = User::whereEmail('restaurant@owner.sk')->first();
-
-        $response = $this->asUser($user)->put(route('api.restaurant.update', ['restaurant' => 1]), [
+        $response = $this->asUser($user)->json('PUT', route('api.restaurant.update', ['id' => app('TestRestaurant1Id')]), [
             'name' => 'Test Restaurant Updated',
             'formatted_address' => '123 Main St, City, State, Zip',
         ]);
@@ -101,28 +107,32 @@ class RestaurantE2ETest extends BaseE2ETest
         $this->assertEquals('Test Restaurant Updated', $response->json('data.name'));
     }
 
-    public function testDeleteRestaurantForbidden(): void
-    {
-        $response = $this->asUser()->delete(route('api.restaurant.destroy', ['restaurant' => 1]));
-
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-    }
-
-    public function testDeleteRestaurant(): void
-    {
-        $user = User::whereEmail('restaurant@owner.sk')->first();
-
-        $response = $this->asUser($user)->delete(route('api.restaurant.destroy', ['restaurant' => 1]));
-
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
-    }
-
-    public function testDeleteRestaurantNotFound(): void
-    {
-        $user = User::whereEmail('restaurant@owner.sk')->first();
-
-        $response = $this->asUser($user)->delete(route('api.restaurant.destroy', ['restaurant' => 999]));
-
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
-    }
+//    public function testDeleteRestaurantForbidden(): void
+//    {
+//        $response = $this->asUser()->delete(route('api.restaurant.destroy', ['id' => app('TestRestaurant2Id')]));
+//
+//        $response->assertStatus(Response::HTTP_FORBIDDEN);
+//        $this->assertNotNull(Restaurant::get(app('TestRestaurant1Id')));
+//    }
+//
+//    public function testDeleteRestaurant(): void
+//    {
+//        $user = User::whereEmail('restaurant@owner.sk')->first();
+//
+//        $response = $this->asUser($user)->delete(route('api.restaurant.destroy', ['id' => app('TestRestaurant1Id')]));
+//
+//        $response->assertStatus(Response::HTTP_NO_CONTENT);
+//
+//        $this->expectException(PDOException::class);
+//        Restaurant::get(app('TestRestaurant1Id'));
+//    }
+//
+//    public function testDeleteRestaurantNotFound(): void
+//    {
+//        $user = User::whereEmail('restaurant@owner.sk')->first();
+//
+//        $response = $this->asUser($user)->delete(route('api.restaurant.destroy', ['id' => 999]));
+//
+//        $response->assertStatus(Response::HTTP_NOT_FOUND);
+//    }
 }

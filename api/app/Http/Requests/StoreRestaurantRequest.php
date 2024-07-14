@@ -17,14 +17,14 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="formatted_address", type="string", description="The formatted address of the restaurant"),
  * )
  */
-class StoreRestaurantRequest extends FormRequest
+class StoreRestaurantRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**

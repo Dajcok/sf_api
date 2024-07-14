@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class StoreItemRequest
@@ -19,14 +18,14 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="restaurant_id", type="number", example="1")
  * )
  */
-class StoreItemRequest extends FormRequest
+class StoreItemRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**

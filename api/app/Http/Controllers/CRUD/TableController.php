@@ -4,6 +4,7 @@ namespace app\Http\Controllers\CRUD;
 
 use App\Contracts\Repositories\TableRepositoryContract;
 use App\Http\Controllers\Abstract\ResourceController;
+use App\Http\Resources\TableCollection;
 use App\Http\Resources\TableResource;
 use App\Http\Requests\StoreTableRequest;
 use App\Http\Requests\UpdateTableRequest;
@@ -14,9 +15,9 @@ use Illuminate\Http\Request;
 
 class TableController extends ResourceController
 {
-    public function __construct(TableRepositoryContract $repository, TableResource $resource)
+    public function __construct(TableRepositoryContract $repository, TableResource $resource, TableCollection $collection)
     {
-        parent::__construct($repository, $resource, Table::class);
+        parent::__construct($repository, $resource, $collection, Table::class);
     }
 
     /**

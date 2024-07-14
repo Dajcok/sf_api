@@ -31,14 +31,6 @@ abstract class ResourceController extends Controller
         protected string $modelName,
     ) {
         parent::__construct();
-        //We want to make sure that the model name is in lowercase as it is used in the authorizeResource method
-        $this->modelName = strtolower($this->modelName);
-        //We want to automatically authorize the resource for all methods except the index method
-        //There we have a custom logic to authorize the resources
-        $this->middleware(function ($request, $next) {
-            $this->authorizeResource($this->modelName);
-            return $next($request);
-        })->except('index');
     }
 
 
@@ -52,8 +44,8 @@ abstract class ResourceController extends Controller
     protected function performStore(FormRequest $request): JsonResponse
     {
         /** @var TStoreRequest $request */
-        $model = $this->repository->create($request->validated());
-        $this->resource->resource = $model;
+        $this->authorize('create', $this->modelName);
+        $this->resource->resource = $this->repository->create($request->validated());
         return Response::send(
             SymfonyResponse::HTTP_CREATED,
             'Resource created successfully.',
@@ -64,12 +56,15 @@ abstract class ResourceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param int         $id
+     * @param int            $id
      * @param TUpdateRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     protected function performUpdate(int $id, FormRequest $request): JsonResponse
     {
+        $model = $this->repository->find($id);
+        $this->authorize('update', $model);
         /** @var TUpdateRequest $request */
         $this->resource->resource = $this->repository->update($id, $request->validated());
         return Response::send(SymfonyResponse::HTTP_OK, 'Resource updated successfully.', $this->resource->toArray($request));
@@ -113,10 +108,12 @@ abstract class ResourceController extends Controller
      * @param int     $id
      * @param Request $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function show(int $id, Request $request): JsonResponse
     {
         $model = $this->repository->find($id);
+        $this->authorize('view', $model);
         $this->resource->resource = $model;
         return Response::send(SymfonyResponse::HTTP_OK, 'Resource retrieved successfully.', $this->resource->toArray($request));
     }
@@ -126,9 +123,12 @@ abstract class ResourceController extends Controller
      *
      * @param int $id
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function destroy(int $id): JsonResponse
     {
+        $model = $this->repository->find($id);
+        $this->authorize('delete', $model);
         $this->repository->delete($id);
         return Response::send(SymfonyResponse::HTTP_NO_CONTENT, 'Resource deleted successfully.');
     }

@@ -17,14 +17,14 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="notes", type="string", description="Order notes")
  * )
  */
-class UpdateOrderRequest extends FormRequest
+class UpdateOrderRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**

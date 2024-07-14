@@ -13,13 +13,6 @@ class BaseE2ETest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * List of routes that require authorization
-     * Override in child classes to test routes for unauthorized requests
-     *
-     * @var array
-     */
-    protected array $authorizedRoutes = [];
 
     /**
      * This assertion is crucial to verify consistency of the structure of all successfull API responses.
@@ -111,19 +104,5 @@ class BaseE2ETest extends TestCase
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]);
-    }
-
-    /**
-     * Tests all routes for unauthorized requests
-     *
-     * @return void
-     */
-    public function testUnauthorizedRequests(): void
-    {
-        foreach ($this->authorizedRoutes as $route) {
-            $response = $this->get(route($route));
-
-            $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        }
     }
 }

@@ -100,7 +100,7 @@ return [
     |
     */
 
-    'ttl' => env('JWT_TTL', 60),
+    'ttl' => (int)env('JWT_TTL', 60),
 
     /*
     |--------------------------------------------------------------------------
@@ -119,7 +119,7 @@ return [
     |
     */
 
-    'refresh_ttl' => env('JWT_REFRESH_TTL', 20160),
+    'refresh_ttl' => (int)env('JWT_REFRESH_TTL', 20160),
 
     /*
     |--------------------------------------------------------------------------
@@ -309,13 +309,13 @@ return [
         'access_token_name' => env('JWT_ACCESS_NAME', 'access_token'),
         'refresh_token_name' => env('JWT_REFRESH_NAME', 'refresh_token'),
         'path' => env('JWT_COOKIE_PATH', '/'),
-        'domain' => env('JWT_COOKIE_DOMAIN', null),
+        'domain' => env('JWT_COOKIE_DOMAIN'),
         'secure' => env('JWT_SECURE_COOKIE', false),
         'http_only' => env('JWT_HTTP_ONLY_COOKIE', true),
         'sames_site' => env('JWT_SAME_SITE_COOKIE', 'lax'),
         //In minutes
-        'refresh_token_ttl' => env('JWT_REFRESH_TTL', 20160),
+        'refresh_token_ttl' => (int)env('JWT_REFRESH_TTL', 20160),
         //In minutes
-        'access_token_ttl' => env('JWT_TTL', 60)
+        'access_token_ttl' => (int)env('JWT_TTL', 60)
     ],
 ];

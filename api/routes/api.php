@@ -49,9 +49,7 @@ Route::middleware(EnforceHeaders::Class)->group(function () {
         Route::prefix('restaurant')->group(function () {
             Route::get('/', [RestaurantController::class, 'index'])->name('api.restaurant.index');
             Route::get('/{id}', [RestaurantController::class, 'show'])->name('api.restaurant.show');
-            Route::post('/', [RestaurantController::class, 'store'])->name('api.restaurant.store');
             Route::put('/{id}', [RestaurantController::class, 'update'])->name('api.restaurant.update');
-            Route::delete('/{id}', [RestaurantController::class, 'destroy'])->name('api.restaurant.destroy');
         });
 
         Route::prefix('table')->group(function () {

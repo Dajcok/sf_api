@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App;
 use App\Enums\UserRoleEnum;
 use App\Models\Restaurant;
 use App\Models\User;
@@ -15,7 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $admin = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@developer.sk',
+            'is_admin' => true,
+        ]);
+
+        App::instance('TestAdminId', $admin->id);
 
         $this->call([
             RestaurantSeeder::class,

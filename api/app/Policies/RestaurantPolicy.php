@@ -38,18 +38,6 @@ class RestaurantPolicy extends BasePolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Restaurant $restaurant): bool
-    {
-        if ($this->isAdmin($user)) {
-            return true;
-        }
-
-        return $this->isOwner($user, $restaurant);
-    }
-
-    /**
      * Determine whether the user can restore the model.
      */
     public function restore(User $user): bool

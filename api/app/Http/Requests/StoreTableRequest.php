@@ -19,14 +19,14 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="y", type="number", description="The y position of the table"),
  * )
  */
-class StoreTableRequest extends FormRequest
+class StoreTableRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**

@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App;
 use App\Enums\UserRoleEnum;
 use App\Models\Restaurant;
+use App\Models\Table;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -12,38 +14,61 @@ class RestaurantSeeder extends Seeder
     /**
      * Run the database seeds.
      *
-     * This creates several test restaurants and its owners.
+     * This creates several test restaurants, tables and its owners.
      */
     public function run(): void
     {
-        $restaurant = Restaurant::create([
+        $restaurant1 = Restaurant::factory()->create([
             'name' => 'Test Restaurant',
             'formatted_address' => '123 Main St, City, State, Zip',
         ]);
 
-        User::factory()->create([
+        $table1 = Table::factory()->create([
+            'restaurant_id' => $restaurant1->id,
+            'number' => 1,
+        ]);
+
+        $table2 = Table::factory()->create([
+            'restaurant_id' => $restaurant1->id,
+            'number' => 2,
+        ]);
+
+        $owner1 = User::factory()->create([
             'name' => 'Test User',
             'email' => 'restaurant@owner.sk',
-            'restaurant_id' => $restaurant->id,
+            'restaurant_id' => $restaurant1->id,
             'role' => UserRoleEnum::RESTAURANT_STAFF->value,
         ]);
 
-        $restaurant2 = Restaurant::create([
+        $restaurant2 = Restaurant::factory()->create([
             'name' => 'Test Restaurant 2',
             'formatted_address' => '456 Main St, City, State, Zip',
         ]);
 
-        User::factory()->create([
+        $table3 = Table::factory()->create([
+            'restaurant_id' => $restaurant2->id,
+            'number' => 3,
+        ]);
+
+        $table4 = Table::factory()->create([
+            'restaurant_id' => $restaurant2->id,
+            'number' => 4,
+        ]);
+
+        $owner2 = User::factory()->create([
             'name' => 'Test User',
             'email' => 'restaurant@owner2.sk',
             'restaurant_id' => $restaurant2->id,
             'role' => UserRoleEnum::RESTAURANT_STAFF->value,
         ]);
 
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@developer.sk',
-            'is_admin' => true,
-        ]);
+        App::instance('TestRestaurant1Id', $restaurant1->id);
+        App::instance('TestRestaurant2Id', $restaurant2->id);
+        App::instance('TestRestaurantOwner1Id', $owner1->id);
+        App::instance('TestRestaurantOwner2Id', $owner2->id);
+        App::instance('TestTable1Id', $table1->id);
+        App::instance('TestTable2Id', $table2->id);
+        App::instance('TestTable3Id', $table3->id);
+        App::instance('TestTable4Id', $table4->id);
     }
 }

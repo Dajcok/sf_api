@@ -6,6 +6,7 @@ use App\Contracts\Repositories\OrderRepositoryContract;
 use App\Http\Controllers\Abstract\ResourceController;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -22,9 +23,9 @@ use Illuminate\Http\Request;
  */
 class OrderController extends ResourceController
 {
-    public function __construct(OrderRepositoryContract $repository, OrderResource $resource)
+    public function __construct(OrderRepositoryContract $repository, OrderResource $resource, OrderCollection $collection)
     {
-        parent::__construct($repository, $resource, Order::class);
+        parent::__construct($repository, $resource, $collection, Order::class);
     }
 
     /**

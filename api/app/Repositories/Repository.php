@@ -56,7 +56,7 @@ class Repository implements RepositoryContract
     {
         $model = $this->model->findOrFail($id);
         $model->update($data);
-        return $model;
+        return $model->refresh();
     }
 
     /**

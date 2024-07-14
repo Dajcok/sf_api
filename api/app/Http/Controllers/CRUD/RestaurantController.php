@@ -178,7 +178,7 @@ class RestaurantController extends ResourceController
      * )
      * @throws AuthorizationException
      */
-    public function update(int $id, UpdateRestaurantRequest $request): JsonResponse
+    public function update(UpdateRestaurantRequest $request, int $id): JsonResponse
     {
         return $this->performUpdate($id, $request);
     }

@@ -78,22 +78,10 @@
             "php artisan optimize"
         ],
         "test:unit":  [
-            "php artisan config:clear",
-            "php artisan config:cache --env=testing",
-
-            "vendor/bin/phpunit --testsuite Unit",
-
-            "php artisan config:clear --env=testing",
-            "php artisan config:cache"
+            "./scripts/start-unit-tests.sh"
         ],
         "test:feature":  [
-            "php artisan config:clear",
-            "php artisan config:cache --env=testing",
-
-            "vendor/bin/phpunit --testsuite Feature",
-
-            "php artisan config:clear --env=testing",
-            "php artisan config:cache"
+            "./scripts/start-feature-tests.sh"
         ],
         "inspect": [
             "php -d memory_limit=2G vendor/bin/phpstan analyse",

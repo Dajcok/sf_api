@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace app\Http\Resources\Abstract;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -17,6 +17,10 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class BaseCollection extends ResourceCollection
 {
     //TODO: Pagination
+    public function __construct($resource = [])
+    {
+        parent::__construct($resource);
+    }
 
     /**
      * Transform the resource collection into an array.

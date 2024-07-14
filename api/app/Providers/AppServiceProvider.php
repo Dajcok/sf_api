@@ -8,8 +8,8 @@ use App\Contracts\Repositories\RestaurantRepositoryContract;
 use App\Contracts\Repositories\TableRepositoryContract;
 use App\Contracts\Repositories\UserRepositoryContract;
 use App\Contracts\Services\AuthServiceContract;
-use App\Models\User;
-use App\Observers\UserObserver;
+use App\Http\Resources\RestaurantCollection;
+use App\Http\Resources\RestaurantResource;
 use App\Repositories\ItemRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\RestaurantRepository;
@@ -19,7 +19,7 @@ use App\Services\AuthService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,6 +57,14 @@ class AppServiceProvider extends ServiceProvider
             TableRepositoryContract::class,
             TableRepository::class
         );
+
+        $this->app->bind(RestaurantCollection::class, function () {
+            return new RestaurantCollection();
+        });
+
+        $this->app->bind(RestaurantResource::class, function () {
+            return new RestaurantResource();
+        });
     }
 
     /**

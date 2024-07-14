@@ -35,7 +35,7 @@ readonly class AuthService implements AuthServiceContract
      * Claims object is defined by AuthTokenClaimsData.
      *
      *
-     * @param JWTSubject $user
+     * @param User $user
      * @return string
      * @see AuthTokenClaimsData
      */
@@ -133,8 +133,10 @@ readonly class AuthService implements AuthServiceContract
      */
     public function refreshToken(RefreshTokenInputData $payload): AuthenticatedOutputData
     {
+        /**
+         * @var User $user
+         */
         $user = JWTAuth::user();
-
         $currentStoredToken = Redis::connection('default')->get('refresh_token_usr:' . $user->id);
 
         if (!$currentStoredToken || $currentStoredToken !== $payload->refreshToken) {

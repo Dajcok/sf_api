@@ -7,6 +7,7 @@ use App\Exceptions\Api\InternalError;
 use App\Exceptions\Api\NotFound;
 use App\Exceptions\Api\Unauthorized;
 use App\Exceptions\Api\UnprocessableContent;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -17,6 +18,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use App\Http\Controllers\Utils\Response;
+use \Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -70,7 +72,12 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             $internalErrorExcp = new InternalError('Database error');
+
             return Response::send($internalErrorExcp->getCode(), $internalErrorExcp->getMessage());
+        });
+
+        $exceptions->render(function (AuthorizationException $e) {
+            return Response::send(SymfonyResponse::HTTP_FORBIDDEN, 'Verify your permissions.');
         });
 
         $exceptions->report(function (Throwable $e) {

@@ -4,6 +4,7 @@ namespace tests\Feature\Models;
 
 use App\Enums\UserRoleEnum;
 use App\Models\User;
+use DB;
 use tests\Feature\Models\Abstract\BaseModelFeatureTestContract;
 use Tests\TestCase;
 

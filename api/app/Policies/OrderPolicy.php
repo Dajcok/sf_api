@@ -35,7 +35,7 @@ class OrderPolicy extends BasePolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === UserRoleEnum::CUSTOMER;
+        return $user->role === UserRoleEnum::CUSTOMER->value;
     }
 
     /**

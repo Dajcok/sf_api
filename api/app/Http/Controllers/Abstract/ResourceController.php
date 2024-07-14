@@ -6,13 +6,13 @@ use App\Contracts\Repositories\RepositoryContract;
 use App\Http\Controllers\Utils\Response;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\Request;
-use App\Http\Resources\BaseCollection;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Collection;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Class ResourceController
@@ -27,6 +27,7 @@ abstract class ResourceController extends Controller
     public function __construct(
         protected readonly RepositoryContract $repository,
         protected readonly JsonResource $resource,
+        protected readonly ResourceCollection $collection,
         protected string $modelName,
     ) {
         parent::__construct();
@@ -34,9 +35,8 @@ abstract class ResourceController extends Controller
         $this->modelName = strtolower($this->modelName);
         //We want to automatically authorize the resource for all methods except the index method
         //There we have a custom logic to authorize the resources
-        $resourceName = $this->resource::class;
-        $this->middleware(function ($request, $next) use ($resourceName) {
-            $this->authorizeResource($resourceName, $this->modelName);
+        $this->middleware(function ($request, $next) {
+            $this->authorizeResource($this->modelName);
             return $next($request);
         })->except('index');
     }
@@ -53,8 +53,12 @@ abstract class ResourceController extends Controller
     {
         /** @var TStoreRequest $request */
         $model = $this->repository->create($request->validated());
-        $resource = new $this->resource($model);
-        return Response::send(SymfonyResponse::HTTP_CREATED, 'Resource created successfully.', $resource->toArray($request));
+        $this->resource->resource = $model;
+        return Response::send(
+            SymfonyResponse::HTTP_CREATED,
+            'Resource created successfully.',
+            $this->resource->toArray($request)
+        );
     }
 
     /**
@@ -67,8 +71,8 @@ abstract class ResourceController extends Controller
     protected function performUpdate(int $id, FormRequest $request): JsonResponse
     {
         /** @var TUpdateRequest $request */
-        $data = new $this->resource($this->repository->update($id, $request->validated()));
-        return Response::send(SymfonyResponse::HTTP_OK, 'Resource updated successfully.', $data->toArray($request));
+        $this->resource->resource = $this->repository->update($id, $request->validated());
+        return Response::send(SymfonyResponse::HTTP_OK, 'Resource updated successfully.', $this->resource->toArray($request));
     }
 
     /**
@@ -99,8 +103,8 @@ abstract class ResourceController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $data = new BaseCollection($this->getAuthorizedResources());
-        return Response::send(SymfonyResponse::HTTP_OK, 'Resources retrieved successfully.', $data->toArray($request));
+         $this->collection->collection = $this->getAuthorizedResources();
+        return Response::send(SymfonyResponse::HTTP_OK, 'Resources retrieved successfully.', $this->collection->toArray($request));
     }
 
     /**
@@ -113,8 +117,8 @@ abstract class ResourceController extends Controller
     public function show(int $id, Request $request): JsonResponse
     {
         $model = $this->repository->find($id);
-        $data = new $this->resource($model);
-        return Response::send(SymfonyResponse::HTTP_OK, 'Resource retrieved successfully.', $data->toArray($request));
+        $this->resource->resource = $model;
+        return Response::send(SymfonyResponse::HTTP_OK, 'Resource retrieved successfully.', $this->resource->toArray($request));
     }
 
     /**

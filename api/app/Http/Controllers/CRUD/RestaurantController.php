@@ -6,6 +6,8 @@ use App\Contracts\Repositories\RestaurantRepositoryContract;
 use App\Http\Controllers\Abstract\ResourceController;
 use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
+use App\Http\Resources\RestaurantCollection;
+use App\Http\Resources\RestaurantResource;
 use App\Models\Restaurant;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -14,9 +16,12 @@ use Illuminate\Http\Request;
 
 class RestaurantController extends ResourceController
 {
-    public function __construct(RestaurantRepositoryContract $repository, JsonResource $resource)
-    {
-        parent::__construct($repository, $resource, Restaurant::class);
+    public function __construct(
+        RestaurantRepositoryContract $repository,
+        RestaurantResource $resource,
+        RestaurantCollection $collection
+    ) {
+        parent::__construct($repository, $resource, $collection, Restaurant::class);
     }
 
     /**
@@ -52,7 +57,6 @@ class RestaurantController extends ResourceController
      *     ),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
-     * @throws AuthorizationException
      */
     public function index(Request $request): JsonResponse
     {

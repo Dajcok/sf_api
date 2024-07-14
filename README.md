@@ -76,6 +76,14 @@ Unit testy sú plne mockované a nemajú žiadnu interakciu s databázou
 
 Feature testy bežia nad testovaciou databázou, kt. sa vždy automaticky premigruje.
 
+#### Stratégia testovania
+Aby som zabezpečil správny chod aplikácie, testujem ju na dvoch úrovniach.
+
+Unit testami testujem jednotlivé services a biznis logiku aplikácie.
+
+Feature testami testujem správnu komunikáciu modelov s databázou(môže sa to zdať zbytočné, ale pomohlo mi to odhaliť niekoľko základných problémov)
+a E2E testovanie API, kde kontrolujem validácie, permissions, správne formátovanie odpovedí a správne fungovanie jednotlivých endpointov.
+
 ### Spustenie testov
 Testy spúšťame pomocou `composer` príkazu, nakoľko len tam zabezpečím správne nastavenie testovacieho prostredia.
 

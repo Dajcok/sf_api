@@ -3,7 +3,7 @@
 namespace app\Http\Controllers\CRUD;
 
 use App\Contracts\Repositories\RepositoryContract;
-use App\Http\Controllers\Abstract\CRUDController;
+use App\Http\Controllers\Abstract\ResourceController;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Models\Item;
@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
  *     description="Endpoints for item management"
  * )
  */
-class ItemController extends CRUDController
+class ItemController extends ResourceController
 {
     public function __construct(RepositoryContract $repository, JsonResource $resource)
     {
@@ -58,7 +58,6 @@ class ItemController extends CRUDController
      *     ),
      *     @OA\Response(response="500", description="Internal Server Error")
      * )
-     * @throws AuthorizationException
      */
     public function index(Request $request): JsonResponse
     {

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Abstract;
 use App\Contracts\Repositories\RepositoryContract;
 use App\Http\Controllers\Utils\Response;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Http\Resources\BaseCollection;
@@ -13,32 +12,45 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Illuminate\Support\Collection;
 
 /**
- * Class CRUDController
+ * Class ResourceController
  * @package App\Http\Controllers\Abstract
  * @template TStoreRequest of FormRequest
  * @template TUpdateRequest of FormRequest
  */
-abstract class CRUDController extends Controller
+abstract class ResourceController extends Controller
 {
     use AuthorizesRequests;
 
     public function __construct(
         protected readonly RepositoryContract $repository,
         protected readonly JsonResource $resource,
-        protected readonly string $modelName
+        protected string $modelName,
     ) {
         parent::__construct();
+        //We want to make sure that the model name is in lowercase as it is used in the authorizeResource method
+        $this->modelName = strtolower($this->modelName);
+        //We want to automatically authorize the resource for all methods except the index method
+        //There we have a custom logic to authorize the resources
+        $resourceName = $this->resource::class;
+        $this->middleware(function ($request, $next) use ($resourceName) {
+            $this->authorizeResource($resourceName, $this->modelName);
+            return $next($request);
+        })->except('index');
     }
 
+
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param TStoreRequest $request
+     * @return JsonResponse
      * @throws AuthorizationException
      */
     protected function performStore(FormRequest $request): JsonResponse
     {
-        $this->authorize('create', $this->modelName);
-
         /** @var TStoreRequest $request */
         $model = $this->repository->create($request->validated());
         $resource = new $this->resource($model);
@@ -46,37 +58,48 @@ abstract class CRUDController extends Controller
     }
 
     /**
-     * @throws AuthorizationException
+     * Store a newly created resource in storage.
+     *
+     * @param int         $id
+     * @param TUpdateRequest $request
+     * @return JsonResponse
      */
     protected function performUpdate(int $id, FormRequest $request): JsonResponse
     {
-        $model = $this->repository->find($id);
-        $this->authorize('update', $model);
-
         /** @var TUpdateRequest $request */
         $data = new $this->resource($this->repository->update($id, $request->validated()));
         return Response::send(SymfonyResponse::HTTP_OK, 'Resource updated successfully.', $data->toArray($request));
     }
 
     /**
+     * Returns all resources if the user is authorized to view any resource.
+     * Otherwise, it returns only the resources that the user is authorized to view.
+     *
+     * @return Collection
+     */
+    protected function getAuthorizedResources(): Collection
+    {
+        try {
+            $this->authorize('viewAny', $this->modelName);
+
+            return $this->repository->all();
+        } catch (AuthorizationException) {
+            return $this->repository->all()->filter(function ($item) {
+                return auth()->user()->can('view', $item);
+            });
+        }
+    }
+
+    /**
      * Display a listing of the resource.
+     * Authorization is handled in the getAuthorizedResources method.
      *
      * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
-        try {
-            $this->authorize('viewAny', $this->modelName);
-
-            $items = $this->repository->all();
-        } catch (AuthorizationException) {
-            $items = $this->repository->all()->filter(function ($item) {
-                return auth()->user()->can('view', $item);
-            });
-        }
-
-        $data = new BaseCollection($items);
+        $data = new BaseCollection($this->getAuthorizedResources());
         return Response::send(SymfonyResponse::HTTP_OK, 'Resources retrieved successfully.', $data->toArray($request));
     }
 
@@ -86,13 +109,10 @@ abstract class CRUDController extends Controller
      * @param int     $id
      * @param Request $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function show(int $id, Request $request): JsonResponse
     {
         $model = $this->repository->find($id);
-        $this->authorize('view', $model);
-
         $data = new $this->resource($model);
         return Response::send(SymfonyResponse::HTTP_OK, 'Resource retrieved successfully.', $data->toArray($request));
     }
@@ -102,13 +122,9 @@ abstract class CRUDController extends Controller
      *
      * @param int $id
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(int $id): JsonResponse
     {
-        $model = $this->repository->find($id);
-        $this->authorize('delete', $model);
-
         $this->repository->delete($id);
         return Response::send(SymfonyResponse::HTTP_NO_CONTENT, 'Resource deleted successfully.');
     }

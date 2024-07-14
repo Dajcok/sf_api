@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\UserRoleEnum;
 use App\Http\Requests\StoreTableRequest;
 use App\Models\Table;
 use App\Models\User;
@@ -11,7 +12,7 @@ class TablePolicy extends BasePolicy
 {
     private function isOwner(User $user, Table|StoreTableRequest $table): bool
     {
-        return $user->role === 'RESTAURANT_STAFF' && $user->restaurant_id === $table->restaurant_id;
+        return $user->role === UserRoleEnum::RESTAURANT_STAFF->value && $user->restaurant_id === $table->restaurant_id;
     }
 
     /**

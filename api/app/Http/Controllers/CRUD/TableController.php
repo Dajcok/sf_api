@@ -3,7 +3,7 @@
 namespace app\Http\Controllers\CRUD;
 
 use App\Contracts\Repositories\TableRepositoryContract;
-use App\Http\Controllers\Abstract\CRUDController;
+use App\Http\Controllers\Abstract\ResourceController;
 use App\Http\Resources\TableResource;
 use App\Http\Requests\StoreTableRequest;
 use App\Http\Requests\UpdateTableRequest;
@@ -12,7 +12,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class TableController extends CRUDController
+class TableController extends ResourceController
 {
     public function __construct(TableRepositoryContract $repository, TableResource $resource)
     {

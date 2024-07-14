@@ -14,6 +14,12 @@ class TableResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->resource->id,
+            'number' => $this->resource->number,
+            'restaurant_id' => $this->resource->restaurant_id,
+            'x' => $this->resource->x,
+            'y' => $this->resource->y,
+        ];
     }
 }

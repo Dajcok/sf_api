@@ -27,4 +27,19 @@ class Table extends Model
         'x',
         'y',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * {@inheritdoc}
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'number' => 'integer',
+            'x' => 'integer',
+            'y' => 'integer',
+        ];
+    }
 }

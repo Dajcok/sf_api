@@ -143,7 +143,7 @@ class AuthE2ETest extends BaseE2ETest
 
         $refreshToken = $loginRes->json('data.refresh_token');
 
-        $refreshRes = $this->postJson(route('api.auth.refresh'), [
+        $refreshRes = $this->asUser()->postJson(route('api.auth.refresh'), [
             'refresh_token' => $refreshToken,
         ]);
 

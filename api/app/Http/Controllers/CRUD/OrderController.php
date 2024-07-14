@@ -3,7 +3,7 @@
 namespace app\Http\Controllers\CRUD;
 
 use App\Contracts\Repositories\OrderRepositoryContract;
-use App\Http\Controllers\Abstract\CRUDController;
+use App\Http\Controllers\Abstract\ResourceController;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
@@ -18,9 +18,9 @@ use Illuminate\Http\Request;
  *     description="Endpoints for order management"
  * )
  *
- * @extends CRUDController<StoreOrderRequest, UpdateOrderRequest>
+ * @extends ResourceController<StoreOrderRequest, UpdateOrderRequest>
  */
-class OrderController extends CRUDController
+class OrderController extends ResourceController
 {
     public function __construct(OrderRepositoryContract $repository, OrderResource $resource)
     {

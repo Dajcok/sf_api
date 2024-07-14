@@ -3,7 +3,7 @@
 namespace app\Http\Controllers\CRUD;
 
 use App\Contracts\Repositories\RestaurantRepositoryContract;
-use App\Http\Controllers\Abstract\CRUDController;
+use App\Http\Controllers\Abstract\ResourceController;
 use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Models\Restaurant;
@@ -12,7 +12,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class RestaurantController extends CRUDController
+class RestaurantController extends ResourceController
 {
     public function __construct(RestaurantRepositoryContract $repository, JsonResource $resource)
     {

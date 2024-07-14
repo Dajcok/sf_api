@@ -20,7 +20,7 @@ Route::middleware(EnforceHeaders::Class)->group(function () {
         Route::post('/register', [AuthController::class, 'register'])->name('api.auth.register');
         Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
         Route::middleware(Auth::Class)->post('/logout', [AuthController::class, 'logout'])->name('api.auth.logout');
-        Route::post('/refresh', [AuthController::class, 'refreshToken'])->name('api.auth.refresh');
+        Route::middleware(Auth::Class)->post('/refresh', [AuthController::class, 'refreshToken'])->name('api.auth.refresh');
         Route::post('/customer', [AuthController::class, 'createCustomer'])->name('api.auth.customer');
     });
 

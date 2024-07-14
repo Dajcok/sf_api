@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use App\Contracts\Repositories\UserRepositoryContract;
 use app\Contracts\Services\AuthServiceContract;
 use App\DTO\Input\Auth\RefreshTokenInputData;
 use App\DTO\Input\Auth\UserCreateInputData;
@@ -10,7 +11,9 @@ use App\DTO\Output\AuthenticatedOutputData;
 use App\Exceptions\Api\Unauthorized;
 use App\Services\AuthService;
 use Doctrine\DBAL\Query\QueryException;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use JWTAuth;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 use Tests\Mocks\External\JWTAuthMock;
@@ -72,6 +75,7 @@ class AuthServiceTest extends TestCase
         $loginResult = $this->service->login($payload);
 
         $refreshPayload = new RefreshTokenInputData(refreshToken: $loginResult->refreshToken);
+        JWTAuth::setToken($loginResult->accessToken); // Set the token to be able to get the user (JWTAuth::user())
         $result = $this->service->refreshToken($refreshPayload);
 
         $this->assertInstanceOf(AuthenticatedOutputData::class, $result);
@@ -85,7 +89,7 @@ class AuthServiceTest extends TestCase
     #[Group('auth')]
     public function testInvalidLogin(): void
     {
-        $this->expectException(TokenInvalidException::class);
+        $this->expectException(Unauthorized::class);
 
         $payload = new UserLoginInputData(email: 'invalid@example.com', password: 'invalidpassword');
         $this->service->login($payload);
@@ -97,12 +101,19 @@ class AuthServiceTest extends TestCase
     #[Group('auth')]
     public function testInvalidRefreshToken(): void
     {
+        $payload = new UserLoginInputData(email: 'john@doe2.com', password: 'StrongPWD');
+        $loginResult = $this->service->login($payload);
+
         $this->expectException(TokenInvalidException::class);
 
         $payload = new RefreshTokenInputData(refreshToken: 'invalidtoken');
+        JWTAuth::setToken($loginResult->accessToken); // Set the token to be able to get the user (JWTAuth::user())
         $this->service->refreshToken($payload);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testCreateCustomer(): void
     {
         $result = $this->service->createCustomer();

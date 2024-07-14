@@ -2,6 +2,7 @@
 
 namespace tests\Feature\Models;
 
+use App\Enums\UserRoleEnum;
 use App\Models\User;
 use tests\Feature\Models\Abstract\BaseModelFeatureTestContract;
 use Tests\TestCase;
@@ -12,7 +13,7 @@ class UserModelFeatureTest extends TestCase implements BaseModelFeatureTestContr
     {
         $user = User::factory()->create([
             'password' => 'password123',
-            'role' => 'RESTAURANT_STAFF'
+            'role' => UserRoleEnum::RESTAURANT_STAFF->value
         ]);
 
         //We will make sure that the password is hashed

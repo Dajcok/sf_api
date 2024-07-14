@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\UserRoleEnum;
 use App\Models\Order;
 use App\Models\User;
 use App\Policies\Abstract\BasePolicy;
@@ -10,7 +11,7 @@ class OrderPolicy extends BasePolicy
 {
     private function isOwner(User $user, Order $order): bool
     {
-        if ($user->role === 'RESTAURANT_STAFF') {
+        if ($user->role === UserRoleEnum::RESTAURANT_STAFF->value) {
             return $user->restaurant_id === $order->restaurant_id;
         }
 
@@ -34,7 +35,7 @@ class OrderPolicy extends BasePolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'CUSTOMER';
+        return $user->role === UserRoleEnum::CUSTOMER;
     }
 
     /**

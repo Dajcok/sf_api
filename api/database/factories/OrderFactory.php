@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Enums\OrderStatusEnum;
 use App\Models\Restaurant;
 use App\Models\Table;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
@@ -24,7 +26,7 @@ class OrderFactory extends Factory
         $tableId = Table::factory()->create()->id;
 
         return [
-            'status' => 'ACTIVE',
+            'status' => OrderStatusEnum::ACTIVE->value,
             'total' => 202.50,
             'table_id' => $tableId,
             'notes' => 'Extra ketchup',

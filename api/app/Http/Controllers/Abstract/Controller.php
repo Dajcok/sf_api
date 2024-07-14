@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Abstract;
 
+use Illuminate\Routing\Controller as BaseController;
+
 /**
  * @OA\Info(
  *     title="SwiftFeast REST API.",
@@ -17,7 +19,7 @@ namespace App\Http\Controllers\Abstract;
  *     @OA\Property(property="status", type="string"),
  * )
  */
-abstract class Controller
+abstract class Controller extends BaseController
 {
     public function __construct()
     {

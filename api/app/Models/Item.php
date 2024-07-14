@@ -30,6 +30,22 @@ class Item extends Model
         'restaurant_id',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * {@inheritdoc}
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'price' => 'float',
+            'ingredients' => 'string',
+            'restaurant_id' => 'integer',
+        ];
+    }
+
     public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Order::class, 'item_order');

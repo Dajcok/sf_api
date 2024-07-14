@@ -22,9 +22,11 @@ class LoginRequest extends FormRequest
 
     public function toUserLoginInputData(): UserLoginInputData
     {
+        $data = $this->validated();
+
         return new UserLoginInputData(
-            $this->input('email'),
-            $this->input('password')
+            $data['email'],
+            $data['password'],
         );
     }
 }

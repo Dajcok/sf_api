@@ -25,4 +25,18 @@ class Restaurant extends Model
         'name',
         'formatted_address',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * {@inheritdoc}
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'formatted_address' => 'string',
+        ];
+    }
 }

@@ -23,10 +23,12 @@ class RegisterRequest extends Request
 
     public function toUserCreateInputData(): UserCreateInputData
     {
+        $data = $this->validated();
+
         return new UserCreateInputData(
-            $this->input('name'),
-            $this->input('email'),
-            $this->input('password'),
+            $data['name'],
+            $data['email'],
+            $data['password'],
         );
     }
 }

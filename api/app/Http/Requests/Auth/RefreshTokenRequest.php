@@ -21,8 +21,10 @@ class RefreshTokenRequest extends FormRequest
 
     public function toRefreshTokenInputData(): RefreshTokenInputData
     {
+        $data = $this->validated();
+
         return new RefreshTokenInputData(
-            $this->input('refresh_token')
+            $data['refresh_token'],
         );
     }
 }

@@ -34,6 +34,23 @@ class Order extends Model
         'notes',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * {@inheritdoc}
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'restaurant_id' => 'integer',
+            'total' => 'float',
+            'status' => 'string',
+            'table_id' => 'integer',
+            'notes' => 'string',
+        ];
+    }
+
     public function items(): BelongsToMany
     {
         return $this->belongsToMany(Item::class, 'item_order');

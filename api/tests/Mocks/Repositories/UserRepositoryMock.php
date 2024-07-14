@@ -2,6 +2,7 @@
 
 namespace Tests\Mocks\Repositories;
 
+use App\Contracts\Repositories\UserRepositoryContract;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,7 +16,7 @@ class UserRepositoryMock
 {
     public static function create(): UserRepository|LegacyMockInterface
     {
-        $mock = Mockery::mock(UserRepository::class);
+        $mock = Mockery::mock(UserRepositoryContract::class);
 
         // Find
         $mock->shouldReceive('find')

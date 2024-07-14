@@ -17,15 +17,15 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => env('CORS_ALLOWED_METHODS', 'GET, POST, PUT, PATCH, DELETE, OPTIONS'),
+    'allowed_methods' => explode(',', env('CORS_ALLOW_METHODS', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')),
 
-    'allowed_origins' => env('CORS_ALLOWED_ORIGINS', '*'),
+    'allowed_origins' => explode(',', env('CORS_ALLOW_ORIGINS', '*')),
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => env('CORS_ALLOWED_HEADERS', '*'),
+    'allowed_headers' => explode(',', env('CORS_ALLOW_HEADERS', 'Content-Type, X-Auth-Token, Origin, Authorization')),
 
-    'exposed_headers' => env('CORS_EXPOSED_HEADERS', ''),
+    'exposed_headers' => [],
 
     'max_age' => env('CORS_MAX_AGE', 0),
 

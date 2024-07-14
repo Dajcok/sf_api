@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\UserRoleEnum;
 use App\Http\Requests\StoreItemRequest;
 use App\Models\Item;
 use App\Models\User;
@@ -11,7 +12,7 @@ class ItemPolicy extends BasePolicy
 {
     private function isOwner(User $user, Item|StoreItemRequest $item): bool
     {
-        return $user->role === 'RESTAURANT_STAFF' && $item->restaurant_id === $user->restaurant_id;
+        return $user->role === UserRoleEnum::RESTAURANT_STAFF->value && $item->restaurant_id === $user->restaurant_id;
     }
 
     /**

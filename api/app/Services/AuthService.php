@@ -9,11 +9,16 @@ use App\DTO\Input\Auth\RefreshTokenInputData;
 use App\DTO\Input\Auth\UserCreateInputData;
 use App\DTO\Input\Auth\UserLoginInputData;
 use App\DTO\Output\AuthenticatedOutputData;
+use App\Enums\UserRoleEnum;
 use App\Exceptions\Api\Unauthorized;
 use App\Models\Restaurant;
 use App\Models\User;
+use Auth;
+use Exception;
 use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Support\Facades\Redis;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -30,14 +35,29 @@ readonly class AuthService implements AuthServiceContract
      * Claims object is defined by AuthTokenClaimsData.
      *
      *
-     * @param User $user
+     * @param JWTSubject $user
      * @return string
      * @see AuthTokenClaimsData
      */
-    private function generateTokenFromUser(User $user): string
+    private function generateTokenFromUser(JWTSubject $user): string
     {
         $claimsData = new AuthTokenClaimsData(email: $user->email, id: $user->id);
         return JWTAuth::claims(['email' => $claimsData->email, 'id' => $claimsData->id])->fromUser($user);
+    }
+
+    /**
+     * Generate refresh token.
+     *
+     * @return string
+     * @throws Exception
+     */
+    private function generateRefreshToken(): string
+    {
+        if (config('app.env') === 'testing') {
+            return 'mocked_token';
+        }
+
+        return bin2hex(random_bytes(40));
     }
 
     /**
@@ -51,11 +71,12 @@ readonly class AuthService implements AuthServiceContract
          * @var PhpRedisConnection $redisConnection
          */
         $redisConnection = Redis::connection('default');
-        $redisConnection->set('refresh_token_usr:' . $userId, $refreshToken, 'EX', 604800);
+        $redisConnection->set('refresh_token_usr:' . $userId, $refreshToken, 'EX', config('jwt.refresh_ttl') * 60);
     }
 
     /**
      * {@inheritDoc}
+     * @throws Exception
      */
     public function register(UserCreateInputData $payload): AuthenticatedOutputData
     {
@@ -70,7 +91,7 @@ readonly class AuthService implements AuthServiceContract
         ]);
 
         $accessToken = $this->generateTokenFromUser($user);
-        $refreshToken = $this->generateTokenFromUser($user);
+        $refreshToken = $this->generateRefreshToken();
 
         $this->storeRefreshToken($refreshToken, $user->id);
 
@@ -79,6 +100,7 @@ readonly class AuthService implements AuthServiceContract
 
     /**
      * {@inheritDoc}
+     * @throws Exception
      */
     public function login(UserLoginInputData $payload): AuthenticatedOutputData
     {
@@ -95,7 +117,7 @@ readonly class AuthService implements AuthServiceContract
          * @var User $user
          */
         $user = JWTAuth::user();
-        $refreshToken = $this->generateTokenFromUser($user);
+        $refreshToken = $this->generateRefreshToken();
 
         $this->storeRefreshToken($refreshToken, $user->id);
 
@@ -107,25 +129,20 @@ readonly class AuthService implements AuthServiceContract
 
     /**
      * {@inheritDoc}
+     * @throws Exception
      */
     public function refreshToken(RefreshTokenInputData $payload): AuthenticatedOutputData
     {
-        $tokenData = JWTAuth::setToken($payload->refreshToken)->getPayload();
-        $userId = $tokenData->get('id');
-        $user = $this->userRepository->find($userId);
+        $user = JWTAuth::user();
 
         $currentStoredToken = Redis::connection('default')->get('refresh_token_usr:' . $user->id);
 
-        if (!$currentStoredToken) {
-            throw new Unauthorized('Invalid or expired refresh token');
-        }
-
-        if ($currentStoredToken !== $payload->refreshToken) {
-            throw new Unauthorized('Invalid or expired refresh token');
+        if (!$currentStoredToken || $currentStoredToken !== $payload->refreshToken) {
+            throw new TokenInvalidException('Invalid or expired refresh token');
         }
 
         $newAccessToken = $this->generateTokenFromUser($user);
-        $newRefreshToken = $this->generateTokenFromUser($user);
+        $newRefreshToken = $this->generateRefreshToken();
 
         // Aktualizácia refresh tokenu v Redis
         Redis::connection('default')->command('DEL', ['refresh_token_usr:' . $user->id]);
@@ -142,6 +159,9 @@ readonly class AuthService implements AuthServiceContract
         Redis::connection('default')->command('DEL', ['refresh_token_usr:' . $userId]);
     }
 
+    /**
+     * @throws Exception
+     */
     public function createCustomer(): AuthenticatedOutputData
     {
         $email = uniqid() . config('auth.anonymous_user_email_postfix', '@example.com');
@@ -155,13 +175,13 @@ readonly class AuthService implements AuthServiceContract
 
         $anonymousUser = $this->userRepository->create([
             'is_anonymous' => true,
-            'role' => 'CUSTOMER',
+            'role' => UserRoleEnum::CUSTOMER->value,
             'email' => $email,
             'password' => $password,
         ]);
 
         $accessToken = $this->generateTokenFromUser($anonymousUser);
-        $refreshToken = $this->generateTokenFromUser($anonymousUser);
+        $refreshToken = $this->generateRefreshToken();
 
         $this->storeRefreshToken($refreshToken, $anonymousUser->id);
 

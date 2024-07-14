@@ -16,7 +16,7 @@ class RedisMock
             ->andReturn($connectionMock);
 
         $connectionMock->shouldReceive('set')
-            ->with('refresh_token_usr:' . 4, 'mocked_token', 'EX', 604800)
+            ->with('refresh_token_usr:' . 4, 'mocked_token', 'EX', config('jwt.refresh_ttl') * 60)
             ->andReturn(true);
 
         $connectionMock->shouldReceive('get')
@@ -28,7 +28,7 @@ class RedisMock
             ->andReturn(true);
 
         $connectionMock->shouldReceive('set')
-            ->with('refresh_token_usr:5', 'mocked_token', 'EX', 604800)
+            ->with('refresh_token_usr:5', 'mocked_token', 'EX', config('jwt.refresh_ttl') * 60)
             ->andReturn(true);
 
         return $connectionMock;

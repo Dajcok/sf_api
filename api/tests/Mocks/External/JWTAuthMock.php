@@ -25,7 +25,7 @@ class JWTAuthMock
                 'email' => 'invalid@example.com',
                 'password' => 'invalidpassword'
             ])
-            ->andThrow(new TokenInvalidException('Invalid credentials'));
+            ->andReturn(false);
 
         $jwtAuthMock->shouldReceive('user')
             ->andReturn((new User)->forceFill([

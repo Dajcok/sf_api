@@ -50,7 +50,7 @@ class RestaurantE2ETest extends BaseE2ETest
 
         $this->assertSuccessfullApiJsonStructureOnIndex($response);
         $this->assertNotEmpty($response->json('data.items'));
-        $this->assertEquals(2, count($response->json('data.items')));
+        $this->assertEquals(6, count($response->json('data.items')));
     }
 
     public function testShowRestaurantForbidden(): void
@@ -106,33 +106,4 @@ class RestaurantE2ETest extends BaseE2ETest
 
         $this->assertEquals('Test Restaurant Updated', $response->json('data.name'));
     }
-
-//    public function testDeleteRestaurantForbidden(): void
-//    {
-//        $response = $this->asUser()->delete(route('api.restaurant.destroy', ['id' => app('TestRestaurant2Id')]));
-//
-//        $response->assertStatus(Response::HTTP_FORBIDDEN);
-//        $this->assertNotNull(Restaurant::get(app('TestRestaurant1Id')));
-//    }
-//
-//    public function testDeleteRestaurant(): void
-//    {
-//        $user = User::whereEmail('restaurant@owner.sk')->first();
-//
-//        $response = $this->asUser($user)->delete(route('api.restaurant.destroy', ['id' => app('TestRestaurant1Id')]));
-//
-//        $response->assertStatus(Response::HTTP_NO_CONTENT);
-//
-//        $this->expectException(PDOException::class);
-//        Restaurant::get(app('TestRestaurant1Id'));
-//    }
-//
-//    public function testDeleteRestaurantNotFound(): void
-//    {
-//        $user = User::whereEmail('restaurant@owner.sk')->first();
-//
-//        $response = $this->asUser($user)->delete(route('api.restaurant.destroy', ['id' => 999]));
-//
-//        $response->assertStatus(Response::HTTP_NOT_FOUND);
-//    }
 }

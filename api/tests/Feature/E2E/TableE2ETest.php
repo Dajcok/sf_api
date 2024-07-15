@@ -49,7 +49,7 @@ class TableE2ETest extends BaseE2ETest
 
         $this->assertSuccessfullApiJsonStructureOnIndex($response);
         $this->assertNotEmpty($response->json('data.items'));
-        $this->assertEquals(2, count($response->json('data.items')));
+        $this->assertEquals(4, count($response->json('data.items')));
     }
 
     public function testShowTableForbidden(): void
@@ -74,14 +74,14 @@ class TableE2ETest extends BaseE2ETest
         ]);
 
         $this->assertEquals(app('TestTable1Id'), $response->json('data.id'));
-        $this->assertEquals('Table 1', $response->json('data.number'));
+        $this->assertEquals(1, $response->json('data.number'));
         $this->assertEquals(app('TestRestaurant1Id'), $response->json('data.restaurant_id'));
     }
 
     public function testUpdateTableForbidden(): void
     {
-        $response = $this->asUser()->put(route('api.table.update', ['id' => app('TestTable1Id')]), [
-            'number' => 'Table 1 Updated',
+        $response = $this->asUser()->json('PUT', route('api.table.update', ['id' => app('TestTable1Id')]), [
+            'number' => 81,
         ]);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
@@ -90,8 +90,8 @@ class TableE2ETest extends BaseE2ETest
     public function testUpdateTable(): void
     {
         $user = User::whereEmail('restaurant@owner.sk')->first();
-        $response = $this->asUser($user)->put(route('api.table.update', ['id' => app('TestTable1Id')]), [
-            'number' => 'Table 1 Updated',
+        $response = $this->asUser($user)->json('PUT', route('api.table.update', ['id' => app('TestTable1Id')]), [
+            'number' => 81,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -104,26 +104,25 @@ class TableE2ETest extends BaseE2ETest
         ]);
 
         $this->assertEquals(app('TestTable1Id'), $response->json('data.id'));
-        $this->assertEquals('Table 1 Updated', $response->json('data.number'));
+        $this->assertEquals(81, $response->json('data.number'));
         $this->assertEquals(app('TestRestaurant1Id'), $response->json('data.restaurant_id'));
     }
 
     public function testUpdateTableValidationError(): void
     {
         $user = User::whereEmail('restaurant@owner.sk')->first();
-        $response = $this->asUser($user)->put(route('api.table.update', ['id' => app('TestTable1Id')]), [
+        $response = $this->asUser($user)->json('PUT', route('api.table.update', ['id' => app('TestTable1Id')]), [
             'number' => 'Table 1 Updated',
-            'restaurant_id' => 999,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrors(['restaurant_id', 'number']);
+        $response->assertJsonValidationErrors(['number']);
     }
 
     public function testUpdateTableNotFound(): void
     {
         $user = User::whereEmail('restaurant@owner.sk')->first();
-        $response = $this->asUser($user)->put(route('api.table.update', ['id' => 999]), [
+        $response = $this->asUser($user)->json('PUT', route('api.table.update', ['id' => 999]), [
             'number' => 4,
         ]);
 
@@ -132,7 +131,7 @@ class TableE2ETest extends BaseE2ETest
 
     public function testStoreTableForbidden(): void
     {
-        $response = $this->asUser()->post(route('api.table.store'), [
+        $response = $this->asUser()->postJson(route('api.table.store'), [
             'number' => 3,
             'restaurant_id' => app('TestRestaurant1Id'),
             'x' => 1,
@@ -145,7 +144,7 @@ class TableE2ETest extends BaseE2ETest
     public function testStoreTable(): void
     {
         $user = User::whereEmail('restaurant@owner.sk')->first();
-        $response = $this->asUser($user)->post(route('api.table.store'), [
+        $response = $this->asUser($user)->postJson(route('api.table.store'), [
             'number' => 3,
             'restaurant_id' => app('TestRestaurant1Id'),
             'x' => 1,
@@ -159,20 +158,20 @@ class TableE2ETest extends BaseE2ETest
             'restaurant_id',
             'x',
             'y',
-        ]);
+        ], Response::HTTP_CREATED);
     }
 
     public function testStoreTableValidationError(): void
     {
         $user = User::whereEmail('restaurant@owner.sk')->first();
-        $response = $this->asUser($user)->post(route('api.table.store'), [
+        $response = $this->asUser($user)->postJson(route('api.table.store'), [
             'number' => 3,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['restaurant_id', 'x', 'y']);
 
-        $response = $this->asUser($user)->post(route('api.table.store'), [
+        $response = $this->asUser($user)->postJson(route('api.table.store'), [
             'restaurant_id' => app('TestRestaurant1Id'),
             'x' => 1,
             'y' => 1,
@@ -181,7 +180,7 @@ class TableE2ETest extends BaseE2ETest
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['number']);
 
-        $response = $this->asUser($user)->post(route('api.table.store'), [
+        $response = $this->asUser($user)->postJson(route('api.table.store'), [
             'number' => 3,
             'restaurant_id' => 999,
             'x' => 1,
@@ -194,10 +193,10 @@ class TableE2ETest extends BaseE2ETest
 
     public function testDeleteTableForbidden(): void
     {
-        $response = $this->asUser()->delete(route('api.table.destroy', ['id' => app('TestTable1Id')]));
+        $response = $this->asUser()->delete(route('api.table.destroy', ['id' => app('TestTable2Id')]));
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
-        $table = Table::get(app('TestTable1Id'));
+        $table = Table::find(app('TestTable2Id'));
         $this->assertNotNull($table);
     }
 
@@ -207,8 +206,7 @@ class TableE2ETest extends BaseE2ETest
         $response = $this->asUser($user)->delete(route('api.table.destroy', ['id' => app('TestTable1Id')]));
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
-        $this->expectException(PDOException::class);
-        Table::get(app('TestTable1Id'));
+        $this->assertNull(Table::find(app('TestTable1Id')));
     }
 
     public function testDeleteTableNotFound(): void

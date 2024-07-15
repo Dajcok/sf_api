@@ -20,9 +20,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  *     @OA\Property(property="name", type="string", description="User name"),
  *     @OA\Property(property="email", type="string", format="email", description="User email"),
  *     @OA\Property(property="password", type="string", format="password", description="User password"),
- *     @OA\Property(property="created_at", type="string", format="date-time", description="Creation date"),
- *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update date"),
  *     @OA\Property(property="restaurant_id", type="integer", description="Restaurant ID"),
+ *     @OA\Property(property="role", type="string", description="User role"),
  * )
  * @mixin Eloquent
  */

@@ -19,6 +19,8 @@ class UserResource extends BaseResource
             'name' => $this->resource->name,
             'email' => $this->resource->email,
             'email_verified_at' => $this->resource->email_verified_at,
+            'role' => $this->resource->role,
+            'restaurant_id' => $this->resource->restaurant_id,
         ];
     }
 }

@@ -7,10 +7,11 @@ use App\Http\Requests\StoreTableRequest;
 use App\Models\Table;
 use App\Models\User;
 use App\Policies\Abstract\BasePolicy;
+use Log;
 
 class TablePolicy extends BasePolicy
 {
-    private function isOwner(User $user, Table|StoreTableRequest $table): bool
+    private function isOwner(User $user, Table $table): bool
     {
         return $user->role === UserRoleEnum::RESTAURANT_STAFF->value && $user->restaurant_id === $table->restaurant_id;
     }
@@ -30,13 +31,13 @@ class TablePolicy extends BasePolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, StoreTableRequest $table): bool
+    public function create(User $user): bool
     {
         if ($this->isAdmin($user)) {
             return true;
         }
 
-        return $this->isOwner($user, $table);
+        return $user->role === UserRoleEnum::RESTAURANT_STAFF->value && $user->restaurant_id === request()->all()['restaurant_id'];
     }
 
     /**

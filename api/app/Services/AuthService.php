@@ -88,7 +88,8 @@ readonly class AuthService implements AuthServiceContract
 
         $user = $this->userRepository->create([
             ...get_object_vars($payload),
-            'restaurant_id' => $restaurant->id
+            'restaurant_id' => $restaurant->id,
+            'role' => UserRoleEnum::RESTAURANT_STAFF->value,
         ]);
 
         $accessToken = $this->generateTokenFromUser($user);

@@ -25,6 +25,7 @@ class Table extends Model
     protected $fillable = [
         'number',
         'x',
+        'restaurant_id',
         'y',
     ];
 

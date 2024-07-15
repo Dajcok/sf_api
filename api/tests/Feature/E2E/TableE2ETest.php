@@ -48,7 +48,7 @@ class TableE2ETest extends BaseE2ETest
 
         $this->assertSuccessfullApiJsonStructureOnIndex($response);
         $this->assertNotEmpty($response->json('data.items'));
-        $this->assertEquals(4, count($response->json('data.items')));
+        $this->assertEquals(8, count($response->json('data.items')));
     }
 
     public function testShowTableForbidden(): void

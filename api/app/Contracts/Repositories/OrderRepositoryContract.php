@@ -29,4 +29,11 @@ interface OrderRepositoryContract extends RepositoryContract
      * @return Order
      */
     public function find(int $id): Order;
+
+    /**
+     * @param int $orderId
+     * @param array $itemIds
+     * @return Order
+     */
+    public function addItemsToOrder(int $orderId, array $itemIds): Order;
 }

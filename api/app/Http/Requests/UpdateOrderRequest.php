@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class UpdateOrderRequest
+ *
  * @package App\Http\Requests
  *
  * @OA\Schema (
@@ -35,8 +36,9 @@ class UpdateOrderRequest extends Request
     public function rules(): array
     {
         return [
-            'status' => 'in:ACTIVE,CANCELED,DONE',
-            'notes' => 'string',
+            'notes' => 'string:required',
+            'table_id' => 'integer:required',
+            'restaurant_id' => 'integer:required',
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App;
 use App\Enums\UserRoleEnum;
 use App\Models\Item;
+use App\Models\Order;
 use App\Models\Restaurant;
 use App\Models\Table;
 use App\Models\User;
@@ -42,6 +43,24 @@ class RestaurantSeeder extends Seeder
             'restaurant_id' => $restaurant1->id,
         ]);
 
+        $customer1 = User::factory()->create([
+            'role' => UserRoleEnum::CUSTOMER->value,
+        ]);
+
+        $order1 = Order::factory()->create([
+            'restaurant_id' => $restaurant1->id,
+            'created_by' => $customer1->id,
+        ]);
+
+        $customer2 = User::factory()->create([
+            'role' => UserRoleEnum::CUSTOMER->value,
+        ]);
+
+        $order2 = Order::factory()->create([
+            'created_by' => $customer2->id,
+            'restaurant_id' => $restaurant1->id,
+        ]);
+
         $owner1 = User::factory()->create([
             'name' => 'Test User',
             'email' => 'restaurant@owner.sk',
@@ -72,6 +91,14 @@ class RestaurantSeeder extends Seeder
             'restaurant_id' => $restaurant2->id,
         ]);
 
+        $order3 = Order::factory()->create([
+            'restaurant_id' => $restaurant2->id,
+        ]);
+
+        $order4 = Order::factory()->create([
+            'restaurant_id' => $restaurant2->id,
+        ]);
+
         $owner2 = User::factory()->create([
             'name' => 'Test User',
             'email' => 'restaurant@owner2.sk',
@@ -91,5 +118,11 @@ class RestaurantSeeder extends Seeder
         App::instance('TestItem2Id', $item2->id);
         App::instance('TestItem3Id', $item3->id);
         App::instance('TestItem4Id', $item4->id);
+        App::instance('TestOrder1Id', $order1->id);
+        App::instance('TestOrder2Id', $order2->id);
+        App::instance('TestOrder3Id', $order3->id);
+        App::instance('TestOrder4Id', $order4->id);
+        App::instance('TestCustomer1Id', $customer1->id);
+        App::instance('TestCustomer2Id', $customer2->id);
     }
 }

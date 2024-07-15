@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\OrderStatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,13 +13,11 @@ use Illuminate\Foundation\Http\FormRequest;
  * @OA\Schema (
  *     title="StoreOrderRequest",
  *     description="Store Order Request",
- *     required={"restaurant_id", "created_by", "status", "total", "table_id"},
+ *     required={"restaurant_id", "notes", "table_id", "items"},
  *     @OA\Property(property="restaurant_id", type="integer", description="Restaurant ID"),
- *     @OA\Property(property="created_by", type="integer", description="User ID"),
- *     @OA\Property(property="status", type="string", description="Order status", enum={"ACTIVE", "CANCELED", "DONE"}),
- *     @OA\Property(property="total", type="number", description="Total amount"),
  *     @OA\Property(property="table_id", type="integer", description="Table ID"),
  *     @OA\Property(property="notes", type="string", description="Order notes")
+ *     @OA\Property(property="items", type="array", @OA\Items(type="integer")),
  * )
  */
 class StoreOrderRequest extends Request
@@ -40,11 +39,26 @@ class StoreOrderRequest extends Request
     {
         return [
             'restaurant_id' => 'required|exists:restaurants,id',
-            'created_by' => 'required|exists:users,id',
-            'status' => 'required|in:ACTIVE,CANCELED,DONE',
-            'total' => 'required|numeric',
             'table_id' => 'required|integer|exists:tables,id',
             'notes' => 'nullable|string',
+            'items' => 'required|array',
+            'items.*' => 'integer|exists:items,id'
         ];
+    }
+
+    /**
+     * Get the validated data from the request.
+     *
+     * @param null $key
+     * @param null $default
+     * @return array
+     */
+    public function validated($key = null, $default = null): array
+    {
+        $validated = parent::validated();
+        $validated['created_by'] = $this->user()->id;
+        $validated['status'] = OrderStatusEnum::ACTIVE->value;
+
+        return $validated;
     }
 }

@@ -4,6 +4,7 @@ namespace app\Http\Controllers\CRUD;
 
 use App\Contracts\Repositories\OrderRepositoryContract;
 use App\Http\Controllers\Abstract\ResourceController;
+use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderCollection;
@@ -12,6 +13,7 @@ use App\Models\Order;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * @OA\Tag(
@@ -101,7 +103,20 @@ class OrderController extends ResourceController
      */
     public function store(StoreOrderRequest $request): JsonResponse
     {
-        return $this->performStore($request);
+        $this->authorize('create', 'App\Models\Order');
+
+        $data = $request->validated();
+        $items = $data['items'];
+        unset($data['items']);
+
+        $this->resource->resource = $this->repository->create($data);
+        $this->repository->addItemsToOrder($this->resource->resource->id, $items);
+
+        return Response::send(
+            SymfonyResponse::HTTP_CREATED,
+            'Resource created successfully.',
+            $this->resource->toArray($request)
+        );
     }
 
     /**

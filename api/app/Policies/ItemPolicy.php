@@ -15,28 +15,31 @@ class ItemPolicy extends BasePolicy
         return $user->role === UserRoleEnum::RESTAURANT_STAFF->value && $item->restaurant_id === $user->restaurant_id;
     }
 
+    public function viewAny(User $user): bool
+    {
+        //We want to allow all users to view any items
+        return true;
+    }
+
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Item $item): bool
+    public function view(): bool
     {
-        if ($this->isAdmin($user)) {
-            return true;
-        }
-
-        return $this->isOwner($user, $item);
+        //We want to allow all users to view items
+        return true;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, StoreItemRequest $item): bool
+    public function create(User $user): bool
     {
         if ($this->isAdmin($user)) {
             return true;
         }
 
-        return $this->isOwner($user, $item);
+        return $user->role === UserRoleEnum::RESTAURANT_STAFF->value && $user->restaurant_id === request()->all()['restaurant_id'];
     }
 
     /**

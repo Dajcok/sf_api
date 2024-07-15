@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App;
 use App\Enums\UserRoleEnum;
+use App\Models\Item;
 use App\Models\Restaurant;
 use App\Models\Table;
 use App\Models\User;
@@ -33,6 +34,14 @@ class RestaurantSeeder extends Seeder
             'number' => 2,
         ]);
 
+        $item1 = Item::factory()->create([
+            'restaurant_id' => $restaurant1->id,
+        ]);
+
+        $item2 = Item::factory()->create([
+            'restaurant_id' => $restaurant1->id,
+        ]);
+
         $owner1 = User::factory()->create([
             'name' => 'Test User',
             'email' => 'restaurant@owner.sk',
@@ -55,6 +64,14 @@ class RestaurantSeeder extends Seeder
             'number' => 4,
         ]);
 
+        $item3 = Item::factory()->create([
+            'restaurant_id' => $restaurant2->id,
+        ]);
+
+        $item4 = Item::factory()->create([
+            'restaurant_id' => $restaurant2->id,
+        ]);
+
         $owner2 = User::factory()->create([
             'name' => 'Test User',
             'email' => 'restaurant@owner2.sk',
@@ -70,5 +87,9 @@ class RestaurantSeeder extends Seeder
         App::instance('TestTable2Id', $table2->id);
         App::instance('TestTable3Id', $table3->id);
         App::instance('TestTable4Id', $table4->id);
+        App::instance('TestItem1Id', $item1->id);
+        App::instance('TestItem2Id', $item2->id);
+        App::instance('TestItem3Id', $item3->id);
+        App::instance('TestItem4Id', $item4->id);
     }
 }

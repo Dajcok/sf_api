@@ -50,7 +50,7 @@ class RestaurantE2ETest extends BaseE2ETest
 
         $this->assertSuccessfullApiJsonStructureOnIndex($response);
         $this->assertNotEmpty($response->json('data.items'));
-        $this->assertEquals(6, count($response->json('data.items')));
+        $this->assertEquals(10, count($response->json('data.items')));
     }
 
     public function testShowRestaurantForbidden(): void

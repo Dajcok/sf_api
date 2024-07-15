@@ -2,14 +2,14 @@
 
 namespace app\Http\Controllers\CRUD;
 
-use App\Contracts\Repositories\RepositoryContract;
 use App\Http\Controllers\Abstract\ResourceController;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Http\Resources\ItemCollection;
+use App\Http\Resources\ItemResource;
 use App\Models\Item;
+use App\Repositories\ItemRepository;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -21,7 +21,7 @@ use Illuminate\Http\Request;
  */
 class ItemController extends ResourceController
 {
-    public function __construct(RepositoryContract $repository, JsonResource $resource, ItemCollection $collection)
+    public function __construct(ItemRepository $repository, ItemResource $resource, ItemCollection $collection)
     {
         parent::__construct($repository, $resource, $collection, Item::class);
     }

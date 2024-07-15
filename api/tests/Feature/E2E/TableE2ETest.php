@@ -4,7 +4,6 @@ namespace tests\Feature\E2E;
 
 use App\Models\Table;
 use App\Models\User;
-use PDOException;
 use Symfony\Component\HttpFoundation\Response;
 use tests\Feature\E2E\Abstract\BaseE2ETest;
 

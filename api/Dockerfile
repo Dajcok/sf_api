@@ -6,6 +6,15 @@ WORKDIR /var/www
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
+RUN echo 'Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcquire::BrokenProxy true;\n' > /etc/apt/apt.conf.d/99fixbadproxy
+
+RUN if [ -f /etc/apt/sources.list ]; then \
+        sed -i 's|http://deb.debian.org/debian|http://ftp.de.debian.org/debian|g' /etc/apt/sources.list; \
+    elif [ -f /etc/apt/sources.list.d/debian.sources ]; then \
+        sed -i 's|http://deb.debian.org/debian|http://ftp.de.debian.org/debian|g' /etc/apt/sources.list.d/debian.sources; \
+    fi && \
+    apt-get clean
+
 # Inštalácia závislostí systému
 RUN apt-get update && apt-get install -y \
     build-essential \

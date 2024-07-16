@@ -107,8 +107,8 @@ class OrderController extends ResourceController
 
         $data = $request->all();
 
-        $this->resource->resource = $this->repository->create($data);
-        $this->repository->addItemsToOrder($this->resource->resource->id, $request->input('items'));
+        $model = $this->repository->create($data);
+        $this->resource->resource = $this->repository->addItemsToOrder($model->id, $request->input('items'));
 
         return Response::send(
             SymfonyResponse::HTTP_CREATED,

@@ -54,6 +54,6 @@ class OrderRepository extends Repository implements OrderRepositoryContract
 
         $order->items()->sync($orderItems);
 
-        return $order;
+        return $order->refresh();
     }
 }

@@ -163,5 +163,5 @@ class OrderE2ETest extends BaseE2ETest
 //        $this->assertEquals(app('TestRestaurant1Id'), $response->json('data.restaurant_id'));
 //    }
 
-    //TODO: dokonči, pridaj unit testy na order service
+    //TODO: dokonči testy pre order keď dokončíš celu logiku
 }

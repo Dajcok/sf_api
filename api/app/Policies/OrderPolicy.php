@@ -59,7 +59,7 @@ class OrderPolicy extends BasePolicy
             return true;
         }
 
-        return $this->isOwner($user, $order);
+        return $user->role === UserRoleEnum::RESTAURANT_STAFF && $user->restaurant_id === $order->restaurant_id;
     }
 
     /**

@@ -36,9 +36,8 @@ class UpdateOrderRequest extends Request
     public function rules(): array
     {
         return [
-            'notes' => 'string:required',
-            'table_id' => 'integer:required',
-            'restaurant_id' => 'integer:required',
+            'notes' => 'string',
+            'status' => 'string|in:ACTIVE,CANCELED,DONE',
         ];
     }
 }

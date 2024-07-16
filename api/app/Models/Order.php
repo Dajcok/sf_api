@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * @mixin Eloquent
  * @OA\Schema(
  *     title="Order",
  *     description="Order model",
@@ -21,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *     @OA\Property(property="notes", type="string", description="The order's notes", example="Extra ketchup"),
  *     @OA\Property(property="restaurant_id", type="integer", description="The restaurant's ID", example="1"),
  * )
+ *
  */
 class Order extends Model
 {
@@ -53,6 +53,25 @@ class Order extends Model
 
     public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Item::class, 'item_order');
+        return $this->belongsToMany(Item::class, 'order_items')
+            ->using(ItemOrder::class)
+            ->withPivot('qty')
+            ->withTimestamps();
+    }
+
+    /**
+     * Calculate the total of the order
+     * It's triggered in the OrderObserver@created method
+     *
+     * @return void
+     */
+    public function calculateTotal(): void
+    {
+        $total = $this->items->sum(function ($item) {
+            return $item->pivot->qty * $item->price;
+        });
+
+        $this->total = $total;
+        $this->save();
     }
 }

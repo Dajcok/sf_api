@@ -48,6 +48,9 @@ class Item extends Model
 
     public function orders(): BelongsToMany
     {
-        return $this->belongsToMany(Order::class, 'item_order');
+        return $this->belongsToMany(Order::class, 'item_order')
+            ->withPivot('qty')
+            ->using(ItemOrder::class)
+            ->withTimestamps();
     }
 }

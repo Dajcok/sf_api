@@ -4,6 +4,7 @@ namespace App\Contracts\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Interface RepositoryContract
@@ -21,6 +22,7 @@ interface RepositoryContract
     /**
      * @param int $id
      *
+     * @throws ModelNotFoundException
      * @return T
      */
     public function find(int $id): Model;

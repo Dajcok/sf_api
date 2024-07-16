@@ -16,6 +16,8 @@ use App\Http\Resources\RestaurantCollection;
 use App\Http\Resources\RestaurantResource;
 use App\Http\Resources\TableCollection;
 use App\Http\Resources\TableResource;
+use App\Models\Order;
+use App\Observers\OrderObserver;
 use App\Repositories\ItemRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\RestaurantRepository;
@@ -105,5 +107,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+
+        Order::observe(OrderObserver::class);
     }
 }

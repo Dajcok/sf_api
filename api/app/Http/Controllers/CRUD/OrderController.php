@@ -103,14 +103,12 @@ class OrderController extends ResourceController
      */
     public function store(StoreOrderRequest $request): JsonResponse
     {
-        $this->authorize('create', 'App\Models\Order');
+        $this->authorize('create', Order::class);
 
         $data = $request->validated();
-        $items = $data['items'];
-        unset($data['items']);
 
         $this->resource->resource = $this->repository->create($data);
-        $this->repository->addItemsToOrder($this->resource->resource->id, $items);
+        $this->repository->addItemsToOrder($this->resource->resource->id, $request->input('items'));
 
         return Response::send(
             SymfonyResponse::HTTP_CREATED,

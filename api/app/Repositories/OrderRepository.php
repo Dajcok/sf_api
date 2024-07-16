@@ -41,16 +41,19 @@ class OrderRepository extends Repository implements OrderRepositoryContract
     }
 
     /**
-     * Pridanie položiek k objednávke.
-     *
-     * @param int $orderId
-     * @param array $itemIds
-     * @return bool
+     * {@inheritDoc}
      */
-    public function addItemsToOrder(int $orderId, array $itemIds): Order
+    public function addItemsToOrder(int $orderId, array $items): Order
     {
         $order = $this->find($orderId);
-        $order->items()->attach($itemIds);
-        return $order->refresh();
+
+        $orderItems = [];
+        foreach ($items as $item) {
+            $orderItems[$item['id']] = ['qty' => $item['qty']];
+        }
+
+        $order->items()->sync($orderItems);
+
+        return $order;
     }
 }

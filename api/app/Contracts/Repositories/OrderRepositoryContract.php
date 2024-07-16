@@ -3,6 +3,7 @@
 namespace App\Contracts\Repositories;
 
 use App\Models\Order;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Interface OrderRepositoryContract
@@ -31,9 +32,10 @@ interface OrderRepositoryContract extends RepositoryContract
     public function find(int $id): Order;
 
     /**
-     * @param int $orderId
-     * @param array $itemIds
+     * @param int   $orderId
+     * @param array $items
      * @return Order
+     * @throws ModelNotFoundException
      */
-    public function addItemsToOrder(int $orderId, array $itemIds): Order;
+    public function addItemsToOrder(int $orderId, array $items): Order;
 }

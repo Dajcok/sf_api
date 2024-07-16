@@ -49,7 +49,7 @@ class OrderRepository extends Repository implements OrderRepositoryContract
 
         $orderItems = [];
         foreach ($items as $item) {
-            $orderItems[$item['id']] = ['qty' => $item['qty']];
+            $orderItems[$item['item_id']] = ['qty' => $item['qty']];
         }
 
         $order->items()->sync($orderItems);

@@ -32,6 +32,7 @@ class Order extends Model
         'status',
         'table_id',
         'notes',
+        'created_by'
     ];
 
     /**
@@ -48,12 +49,13 @@ class Order extends Model
             'status' => 'string',
             'table_id' => 'integer',
             'notes' => 'string',
+            'created_by' => 'integer'
         ];
     }
 
     public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Item::class, 'order_items')
+        return $this->belongsToMany(Item::class, 'item_order')
             ->using(ItemOrder::class)
             ->withPivot('qty')
             ->withTimestamps();

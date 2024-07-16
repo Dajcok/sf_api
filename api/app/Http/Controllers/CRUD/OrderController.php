@@ -105,7 +105,7 @@ class OrderController extends ResourceController
     {
         $this->authorize('create', Order::class);
 
-        $data = $request->validated();
+        $data = $request->all();
 
         $this->resource->resource = $this->repository->create($data);
         $this->repository->addItemsToOrder($this->resource->resource->id, $request->input('items'));

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\OrderStatusEnum;
+use DB;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
@@ -46,8 +47,39 @@ class StoreOrderRequest extends Request
         $this->merge([
             'created_by' => $this->user()->id,
             'status' => OrderStatusEnum::ACTIVE->value,
+            //We will calculate total after we add items to the order
+            'total' => 0
         ]);
     }
+
+    /**
+     * We use this to ensure that the items in the request belong to the specified restaurant.
+     *
+     * @param $validator
+     * @return void
+     */
+    protected function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $restaurantId = $this->input('restaurant_id');
+            $items = $this->input('items', []);
+
+            foreach ($items as $item) {
+                $itemId = $item['item_id'] ?? null;
+                if ($itemId) {
+                    $itemExists = DB::table('items')
+                        ->where('id', $itemId)
+                        ->where('restaurant_id', $restaurantId)
+                        ->exists();
+                    if (!$itemExists) {
+                        $validator->errors()->add('items', 'One or more items do not belong to the specified restaurant.');
+                        break;
+                    }
+                }
+            }
+        });
+    }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -60,7 +92,7 @@ class StoreOrderRequest extends Request
             'restaurant_id' => 'required|exists:restaurants,id',
             'table_id' => 'required|integer|exists:tables,id',
             'notes' => 'nullable|string',
-            'items' => 'required|array',
+            'items' => 'required|array|min:1',
             'items.*.item_id' => 'required|integer|exists:items,id',
             'items.*.qty' => 'required|integer|min:1'
         ];

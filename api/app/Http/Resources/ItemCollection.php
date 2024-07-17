@@ -17,4 +17,9 @@ class ItemCollection extends BaseCollection
     {
         return parent::toArray($request);
     }
+
+    public function getSelfUrl(): string
+    {
+        return route('api.item.index');
+    }
 }

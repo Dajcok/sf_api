@@ -17,4 +17,12 @@ class RestaurantCollection extends BaseCollection
     {
         return parent::toArray($request);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSelfUrl(): string
+    {
+        return route('api.restaurant.index');
+    }
 }

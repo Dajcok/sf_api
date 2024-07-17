@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -98,7 +99,12 @@ abstract class ResourceController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-         $this->collection->collection = $this->getAuthorizedResources();
+        $this->collection->resource = $this->paginateCollection(
+            $this->getAuthorizedResources(),
+            $request->get('per_page', 0),
+            $request
+        );
+
         return Response::send(SymfonyResponse::HTTP_OK, 'Resources retrieved successfully.', $this->collection->toArray($request));
     }
 
@@ -131,5 +137,27 @@ abstract class ResourceController extends Controller
         $this->authorize('delete', $model);
         $this->repository->delete($id);
         return Response::send(SymfonyResponse::HTTP_NO_CONTENT, 'Resource deleted successfully.');
+    }
+
+    /**
+     * Paginate a collection manually.
+     * We need this when the collection is already loaded and we want to paginate it.
+     *
+     * @param Collection $items
+     * @param int $perPage
+     * @param Request $request
+     * @return LengthAwarePaginator
+     */
+    protected function paginateCollection(Collection $items, int $perPage, Request $request): LengthAwarePaginator
+    {
+        $page = $request->get('page', 1);
+        $total = $items->count();
+        $perPage = ($perPage === 0) ? config('app.pagination.default') : $perPage;
+        $results = $items->forPage($page, $perPage);
+
+        return new LengthAwarePaginator($results, $total, $perPage, $page, [
+            'path' => $request->url(),
+            'query' => $request->query(),
+        ]);
     }
 }

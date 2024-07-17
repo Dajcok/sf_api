@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *     @OA\Property(property="notes", type="string", description="The order's notes", example="Extra ketchup"),
  *     @OA\Property(property="restaurant_id", type="integer", description="The restaurant's ID", example="1"),
  * )
- *
  */
 class Order extends Model
 {

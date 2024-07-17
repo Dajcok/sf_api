@@ -19,23 +19,6 @@ class ItemOrder extends Pivot
         'order_id',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::created(function ($pivot) {
-            $pivot->order->calculateTotal();
-        });
-
-        static::updated(function ($pivot) {
-            $pivot->order->calculateTotal();
-        });
-
-        static::deleted(function ($pivot) {
-            $pivot->order->calculateTotal();
-        });
-    }
-
     /**
      * Get the attributes that should be cast.
      *

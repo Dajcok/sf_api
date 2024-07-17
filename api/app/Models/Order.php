@@ -28,7 +28,6 @@ class Order extends Model
 
     protected $fillable = [
         'restaurant_id',
-        'total',
         'status',
         'table_id',
         'notes',
@@ -45,7 +44,6 @@ class Order extends Model
         return [
             'id' => 'integer',
             'restaurant_id' => 'integer',
-            'total' => 'float',
             'status' => 'string',
             'table_id' => 'integer',
             'notes' => 'string',
@@ -59,21 +57,5 @@ class Order extends Model
             ->using(ItemOrder::class)
             ->withPivot('qty')
             ->withTimestamps();
-    }
-
-    /**
-     * Calculate the total of the order
-     * It's triggered in the OrderObserver@created method
-     *
-     * @return void
-     */
-    public function calculateTotal(): void
-    {
-        $total = $this->items->sum(function ($item) {
-            return $item->pivot->qty * $item->price;
-        });
-
-        $this->total = $total;
-        $this->save();
     }
 }

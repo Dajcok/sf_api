@@ -359,7 +359,7 @@ return [
         // "ii" => "Sichuan Yi",
         // "si_LK" => "Sinhala (Sri Lanka)",
         // "si" => "Sinhala",
-        // "sk_SK" => "Slovak (Slovakia)",
+        "sk_SK" => "Slovak (Slovakia)",
         // "sk" => "Slovak",
         // "sl_SI" => "Slovenian (Slovenia)",
         // "sl" => "Slovenian",

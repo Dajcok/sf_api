@@ -31,6 +31,7 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
     use CrudTrait;
 
+
     /**
      * The attributes that are mass assignable.
      *

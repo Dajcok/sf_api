@@ -44,6 +44,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Kopírovanie celej aplikácie
 COPY . /var/www
 
+RUN docker-php-ext-install bcmath
+
 # Inštalácia závislostí
 RUN composer install
 

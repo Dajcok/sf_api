@@ -9,8 +9,11 @@
         "backpack/crud": "^6.7",
         "backpack/theme-tabler": "^1.2",
         "darkaonline/l5-swagger": "^8.6",
+        "illuminate/console": "^11.0",
+        "laravel/cashier": "^15.4",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
+        "moneyphp/money": "^4.5",
         "predis/predis": "^2.2",
         "tymon/jwt-auth": "^2.1"
     },

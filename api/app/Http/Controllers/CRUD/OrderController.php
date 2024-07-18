@@ -13,7 +13,9 @@ use App\Models\Order;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @OA\Tag(
@@ -232,5 +234,17 @@ class OrderController extends ResourceController
     public function destroy(int $id): JsonResponse
     {
         return parent::destroy($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getAuthorizedResources(): Collection|LengthAwarePaginator
+    {
+        try {
+            return parent::getAuthorizedResources();
+        } catch (AuthorizationException) {
+            return $this->repository->paginate($this->repository->withPermissions());
+        }
     }
 }

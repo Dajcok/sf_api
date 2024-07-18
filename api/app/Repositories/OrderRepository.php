@@ -4,7 +4,8 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\OrderRepositoryContract;
 use App\Models\Order;
-use Illuminate\Database\Eloquent\Collection;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @extends Repository<Order>
@@ -55,5 +56,13 @@ class OrderRepository extends Repository implements OrderRepositoryContract
         $order->items()->sync($orderItems);
 
         return $order->refresh();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withPermissions(): Eloquent|Builder
+    {
+        return $this->model->where('user_id', auth()->id());
     }
 }

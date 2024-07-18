@@ -5,18 +5,19 @@ namespace App\Http\Controllers\Abstract;
 use App\Contracts\Repositories\RepositoryContract;
 use App\Http\Controllers\Utils\Response;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Class ResourceController
+ *
  * @package App\Http\Controllers\Abstract
  * @template TStoreRequest of FormRequest
  * @template TUpdateRequest of FormRequest
@@ -73,21 +74,16 @@ abstract class ResourceController extends Controller
 
     /**
      * Returns all resources if the user is authorized to view any resource.
-     * Otherwise, it returns only the resources that the user is authorized to view.
+     * Otherwise, it throws an AuthorizationException.
      *
-     * @return Collection
+     * @return Collection|LengthAwarePaginator
+     * @throws AuthorizationException
      */
-    protected function getAuthorizedResources(): Collection
+    protected function getAuthorizedResources(): Collection|LengthAwarePaginator
     {
-        try {
-            $this->authorize('viewAny', $this->modelName);
+        $this->authorize('viewAny', $this->modelName);
 
-            return $this->repository->all();
-        } catch (AuthorizationException) {
-            return $this->repository->all()->filter(function ($item) {
-                return auth()->user()->can('view', $item);
-            });
-        }
+        return $this->repository->all();
     }
 
     /**
@@ -99,13 +95,12 @@ abstract class ResourceController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $this->collection->resource = $this->paginateCollection(
-            $this->getAuthorizedResources(),
-            $request->get('per_page', 0),
-            $request
+        $this->collection->resource = $this->getAuthorizedResources();
+        return Response::send(
+            SymfonyResponse::HTTP_OK,
+            'Resources retrieved successfully.',
+            $this->collection->toArray($request)
         );
-
-        return Response::send(SymfonyResponse::HTTP_OK, 'Resources retrieved successfully.', $this->collection->toArray($request));
     }
 
     /**
@@ -137,27 +132,5 @@ abstract class ResourceController extends Controller
         $this->authorize('delete', $model);
         $this->repository->delete($id);
         return Response::send(SymfonyResponse::HTTP_NO_CONTENT, 'Resource deleted successfully.');
-    }
-
-    /**
-     * Paginate a collection manually.
-     * We need this when the collection is already loaded and we want to paginate it.
-     *
-     * @param Collection $items
-     * @param int $perPage
-     * @param Request $request
-     * @return LengthAwarePaginator
-     */
-    protected function paginateCollection(Collection $items, int $perPage, Request $request): LengthAwarePaginator
-    {
-        $page = $request->get('page', 1);
-        $total = $items->count();
-        $perPage = ($perPage === 0) ? config('app.pagination.default') : $perPage;
-        $results = $items->forPage($page, $perPage);
-
-        return new LengthAwarePaginator($results, $total, $perPage, $page, [
-            'path' => $request->url(),
-            'query' => $request->query(),
-        ]);
     }
 }

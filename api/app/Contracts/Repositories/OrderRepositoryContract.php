@@ -3,6 +3,8 @@
 namespace App\Contracts\Repositories;
 
 use App\Models\Order;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -38,4 +40,11 @@ interface OrderRepositoryContract extends RepositoryContract
      * @throws ModelNotFoundException
      */
     public function addItemsToOrder(int $orderId, array $items): Order;
+
+    /**
+     * Specify how the app should retrieve records for specific user.
+     *
+     * @return Eloquent|Builder
+     */
+    public function withPermissions(): Eloquent|Builder;
 }

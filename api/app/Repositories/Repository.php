@@ -3,14 +3,17 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\RepositoryContract;
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @template T of Model
  * @implements RepositoryContract<T>
  */
-class Repository implements RepositoryContract
+abstract class Repository implements RepositoryContract
 {
     /**
      * @var T
@@ -28,9 +31,13 @@ class Repository implements RepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function all(): Collection
+    public function all($paginated = true): LengthAwarePaginator
     {
-        return $this->model->all();
+        if (!$paginated) {
+            return $this->model->all();
+        }
+
+        return $this->paginate($this->model);
     }
 
     /**
@@ -73,5 +80,14 @@ class Repository implements RepositoryContract
     public function getModel(): Model
     {
         return $this->model;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function paginate(Eloquent|Builder $model, int $perPage = null): LengthAwarePaginator
+    {
+        $perPage = $perPage ?? config('app.pagination.default');
+        return $model->paginate($perPage);
     }
 }

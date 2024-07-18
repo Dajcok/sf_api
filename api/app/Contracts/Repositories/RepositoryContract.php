@@ -2,28 +2,33 @@
 
 namespace App\Contracts\Repositories;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Interface RepositoryContract
+ *
  * @package app\Contracts\Repositories
  * @template T of Model
  */
 interface RepositoryContract
 {
     /**
-     * @return Collection<int, T>
+     * @param bool $paginated
+     * @return Collection | LengthAwarePaginator
      */
-    public function all(): Collection;
+    public function all(bool $paginated): Collection|LengthAwarePaginator;
 
 
     /**
      * @param int $id
      *
-     * @throws ModelNotFoundException
      * @return T
+     * @throws ModelNotFoundException
      */
     public function find(int $id): Model;
 
@@ -37,7 +42,7 @@ interface RepositoryContract
 
 
     /**
-     * @param int $id
+     * @param int   $id
      * @param array $data
      *
      * @return T
@@ -55,4 +60,13 @@ interface RepositoryContract
      * @return T
      */
     public function getModel(): Model;
+
+    /**
+     * Paginate the model results.
+     *
+     * @param Eloquent|Builder $model
+     * @param int|null         $perPage
+     * @return LengthAwarePaginator
+     */
+    public function paginate(Eloquent|Builder $model, int $perPage = null): LengthAwarePaginator;
 }

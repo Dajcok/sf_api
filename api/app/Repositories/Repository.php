@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Contracts\Repositories\RepositoryContract;
 use Eloquent;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -37,7 +36,7 @@ abstract class Repository implements RepositoryContract
             return $this->model->all();
         }
 
-        return $this->paginate($this->model);
+        return $this->model->paginate();
     }
 
     /**
@@ -82,12 +81,8 @@ abstract class Repository implements RepositoryContract
         return $this->model;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function paginate(Eloquent|Builder $model, int $perPage = null): LengthAwarePaginator
     {
-        $perPage = $perPage ?? config('app.pagination.default');
         return $model->paginate($perPage);
     }
 }

@@ -16,6 +16,17 @@ services:
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     networks:
       - sf_network
+  sf_pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@developer.sk
+      PGADMIN_DEFAULT_PASSWORD: StrongPWD1
+    ports:
+      - "8080:80"
+    depends_on:
+      - sf_db
+    networks:
+      - sf_network
   sf_api:
     build:
       context: api
@@ -29,7 +40,6 @@ services:
       - "9000:9000"
     volumes:
       - ./api:/var/www/
-
   sf_cache:
     image: redis:alpine
     environment:
@@ -37,3 +47,4 @@ services:
       REDIS_PORT: 6379
     networks:
       - sf_network
+

@@ -38,6 +38,9 @@ services:
       - sf_network
     ports:
       - "9000:9000"
+    env_file:
+      - ./api/.env
+      - ./api/.env.testing
     volumes:
       - ./api:/var/www/
   sf_cache:

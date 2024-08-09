@@ -6,6 +6,7 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -30,6 +31,7 @@ class Item extends Model
         'price',
         'ingredients',
         'restaurant_id',
+        'category_id',
     ];
 
     /**
@@ -45,6 +47,7 @@ class Item extends Model
             'price' => 'float',
             'ingredients' => 'string',
             'restaurant_id' => 'integer',
+            'category_id' => 'integer',
         ];
     }
 
@@ -54,5 +57,10 @@ class Item extends Model
             ->withPivot('qty')
             ->using(ItemOrder::class)
             ->withTimestamps();
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 }

@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
+use App\Contracts\Repositories\CategoryRepositoryContract;
 use App\Contracts\Repositories\ItemRepositoryContract;
 use App\Contracts\Repositories\OrderRepositoryContract;
 use App\Contracts\Repositories\RestaurantRepositoryContract;
 use App\Contracts\Repositories\TableRepositoryContract;
 use App\Contracts\Repositories\UserRepositoryContract;
 use App\Contracts\Services\AuthServiceContract;
+use App\Http\Resources\CategoryCollection;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ItemCollection;
 use App\Http\Resources\ItemResource;
 use App\Http\Resources\OrderCollection;
@@ -18,6 +21,7 @@ use App\Http\Resources\TableCollection;
 use App\Http\Resources\TableResource;
 use App\Models\Order;
 use App\Observers\OrderObserver;
+use App\Repositories\CategoryRepository;
 use App\Repositories\ItemRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\RestaurantRepository;
@@ -66,6 +70,11 @@ class AppServiceProvider extends ServiceProvider
             TableRepository::class
         );
 
+        $this->app->bind(
+            CategoryRepositoryContract::class,
+            CategoryRepository::class
+        );
+
         $this->app->bind(RestaurantCollection::class, function () {
             return new RestaurantCollection();
         });
@@ -96,6 +105,12 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(OrderResource::class, function () {
             return new OrderResource();
+        });
+        $this->app->bind(CategoryCollection::class, function () {
+            return new CategoryCollection();
+        });
+        $this->app->bind(CategoryResource::class, function () {
+            return new CategoryResource();
         });
     }
 

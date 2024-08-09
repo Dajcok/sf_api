@@ -10,7 +10,7 @@ class ItemFactory extends Factory
     /**
      * @inheritDoc
      */
-    public function definition()
+    public function definition(): array
     {
         $restaurantId = Restaurant::factory()->create()->id;
 

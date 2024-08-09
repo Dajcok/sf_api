@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CRUD\CategoryController;
 use app\Http\Controllers\CRUD\ItemController;
 use app\Http\Controllers\CRUD\OrderController;
 use app\Http\Controllers\CRUD\RestaurantController;
@@ -58,6 +59,14 @@ Route::middleware(EnforceHeaders::Class)->group(function () {
             Route::post('/', [TableController::class, 'store'])->name('api.table.store');
             Route::put('/{id}', [TableController::class, 'update'])->name('api.table.update');
             Route::delete('/{id}', [TableController::class, 'destroy'])->name('api.table.destroy');
+        });
+
+        Route::prefix('category')->group(function () {
+            Route::get('/', [CategoryController::class, 'index'])->name('api.category.index');
+            Route::get('/{id}', [CategoryController::class, 'show'])->name('api.category.show');
+            Route::post('/', [CategoryController::class, 'store'])->name('api.category.store');
+            Route::put('/{id}', [CategoryController::class, 'update'])->name('api.category.update');
+            Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('api.category.destroy');
         });
     });
 });

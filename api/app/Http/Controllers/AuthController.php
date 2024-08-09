@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\Services\AuthServiceContract;
+use App\DTO\Input\Auth\RefreshTokenInputData;
 use App\DTO\Options\JWTCookieOptions;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Enums\JWTCookieTypeEnum;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Request;
 use App\Models\User;
 use Auth;
 use Doctrine\DBAL\Query\QueryException;
@@ -137,7 +139,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/auth/refresh-token/",
+     *     path="/api/auth/refresh/",
      *     tags={"Auth"},
      *     @OA\RequestBody(
      *         required=true,
@@ -164,10 +166,15 @@ class AuthController extends Controller
      * )
      * @throws Unauthorized
      */
-    public function refreshToken(RefreshTokenRequest $request): JsonResponse
+    public function refreshToken(Request $request): JsonResponse
     {
-        $validatedData = $request->toRefreshTokenInputData();
-        $tokens = $this->service->refreshToken($validatedData);
+        $refresh = $request->cookies->get(config('jwt.cookie.refresh_token_name', 'refresh_token'));
+
+        if($refresh === null) {
+            throw new Unauthorized('Refresh token not found');
+        }
+
+        $tokens = $this->service->refreshToken(new RefreshTokenInputData($refresh));
 
         return Response::send(
             message: 'Token refreshed successfully',

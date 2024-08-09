@@ -12,7 +12,6 @@ use App\Exceptions\Api\Unauthorized;
 use App\Http\Controllers\Abstract\Controller;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Request;
 use App\Models\User;

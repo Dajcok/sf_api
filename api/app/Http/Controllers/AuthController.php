@@ -7,13 +7,11 @@ use App\DTO\Input\Auth\RefreshTokenInputData;
 use App\DTO\Options\JWTCookieOptions;
 use App\DTO\Output\AuthenticatedOutputData;
 use App\Enums\JWTCookieTypeEnum;
-use App\Enums\ResponseStatusEnum;
 use App\Exceptions\Api\Unauthorized;
 use App\Http\Controllers\Abstract\Controller;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Request;
 use App\Models\User;
 use Auth;
 use Doctrine\DBAL\Query\QueryException;
@@ -165,15 +163,13 @@ class AuthController extends Controller
      * )
      * @throws Unauthorized
      */
-    public function refreshToken(Request $request): JsonResponse
+    public function refreshToken(): JsonResponse
     {
-        $refresh = $request->cookies->get(config('jwt.cookie.refresh_token_name', 'refresh_token'));
-
-        if($refresh === null) {
+        if (!isset($_COOKIE[config('jwt.cookie.refresh_token_name', 'refresh_token')])) {
             throw new Unauthorized('Refresh token not found');
         }
 
-        $tokens = $this->service->refreshToken(new RefreshTokenInputData($refresh));
+        $tokens = $this->service->refreshToken(new RefreshTokenInputData($_COOKIE[config('jwt.cookie.refresh_token_name', 'refresh_token')]));
 
         return Response::send(
             message: 'Token refreshed successfully',

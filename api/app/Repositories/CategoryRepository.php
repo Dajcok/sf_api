@@ -43,6 +43,7 @@ class CategoryRepository extends Repository implements CategoryRepositoryContrac
 
     /**
      * {@inheritDoc}
+     * @return Eloquent|Builder
      */
     public function withPermissions(): Eloquent|Builder
     {

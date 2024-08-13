@@ -10,8 +10,10 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 /**
  * @OA\Tag(
@@ -204,5 +206,17 @@ class CategoryController extends ResourceController
     public function destroy(int $id): JsonResponse
     {
         return parent::destroy($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getAuthorizedResources(): LengthAwarePaginator|Collection
+    {
+        try {
+            return parent::getAuthorizedResources();
+        } catch (AuthorizationException) {
+            return $this->repository->paginate($this->repository->withPermissions());
+        }
     }
 }

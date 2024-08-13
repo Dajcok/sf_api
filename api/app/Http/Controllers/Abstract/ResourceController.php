@@ -47,7 +47,7 @@ abstract class ResourceController extends Controller
     {
         /** @var TStoreRequest $request */
         $this->authorize('create', $this->modelName);
-        $this->resource->resource = $this->repository->create($request->validated());
+        $this->resource->resource = $this->repository->create($request->all());
         return Response::send(
             SymfonyResponse::HTTP_CREATED,
             'Resource created successfully.',

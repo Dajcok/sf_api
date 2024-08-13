@@ -15,19 +15,16 @@ class CategoryPolicy extends BasePolicy
         return $user->role === UserRoleEnum::RESTAURANT_STAFF->value && $category->restaurant_id === $user->restaurant_id;
     }
 
-    public function viewAny(User $user): bool
-    {
-        //We want to allow all users to view any items
-        return true;
-    }
-
     /**
      * Determine whether the user can view the model.
      */
-    public function view(): bool
+    public function view(User $user, Category $category): bool
     {
-        //We want to allow all users to view items
-        return true;
+        if ($this->isAdmin($user)) {
+            return true;
+        }
+
+        return $user->restaurant_id === $category->restaurant_id;
     }
 
     /**

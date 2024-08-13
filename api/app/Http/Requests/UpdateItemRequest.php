@@ -39,6 +39,7 @@ class UpdateItemRequest extends Request
             'name' => 'string|max:255',
             'price' => 'numeric',
             'ingredients' => 'string',
+            'category_id' => 'exists:categories,id'
         ];
     }
 }

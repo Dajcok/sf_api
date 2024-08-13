@@ -39,7 +39,7 @@ class CategoryPolicy extends BasePolicy
             return true;
         }
 
-        return $user->role === UserRoleEnum::RESTAURANT_STAFF->value && $user->restaurant_id === request()->all()['restaurant_id'];
+        return $user->role === UserRoleEnum::RESTAURANT_STAFF->value;
     }
 
     /**

@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\CategoryRepositoryContract;
 use App\Models\Category;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @extends Repository<Category>
@@ -37,5 +39,13 @@ class CategoryRepository extends Repository implements CategoryRepositoryContrac
     public function find(int $id): Category
     {
         return parent::find($id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function withPermissions(): Eloquent|Builder
+    {
+        return $this->model->where('restaurant_id', auth()->user()->restaurant_id);
     }
 }

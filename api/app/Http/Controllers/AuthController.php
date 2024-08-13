@@ -12,8 +12,6 @@ use App\Http\Controllers\Abstract\Controller;
 use App\Http\Controllers\Utils\Response;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\User;
-use Auth;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\JsonResponse;
 
@@ -206,9 +204,11 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $this->service->logout($user->id);
+        $refresh = $_COOKIE[config('jwt.cookie.refresh_token_name', 'refresh_token')];
+
+        if($refresh) {
+            $this->service->removeRefreshToken($refresh);
+        }
 
         return Response::send(
             message: 'Logged out successfully',

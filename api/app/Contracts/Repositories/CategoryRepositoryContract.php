@@ -2,6 +2,8 @@
 namespace App\Contracts\Repositories;
 
 use App\Models\Category;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 
 interface CategoryRepositoryContract extends RepositoryContract
 {
@@ -23,4 +25,9 @@ interface CategoryRepositoryContract extends RepositoryContract
      * @return Category
      */
     public function find(int $id): Category;
+
+    /**
+     * @return Eloquent|Builder
+     */
+    public function withPermissions(): Eloquent|Builder;
 }

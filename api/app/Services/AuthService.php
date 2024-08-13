@@ -72,7 +72,7 @@ readonly class AuthService implements AuthServiceContract
          * @var PhpRedisConnection $redisConnection
          */
         $redisConnection = Redis::connection('default');
-        $redisConnection->set('refresh_token_usr:' . $userId, $refreshToken, 'EX', config('jwt.refresh_ttl') * 60);
+        $redisConnection->set('refresh_token_:' . $refreshToken, $userId, 'EX', config('jwt.refresh_ttl') * 60);
     }
 
     /**
@@ -135,21 +135,17 @@ readonly class AuthService implements AuthServiceContract
      */
     public function refreshToken(RefreshTokenInputData $payload): AuthenticatedOutputData
     {
-        /**
-         * @var User $user
-         */
-        $user = JWTAuth::user();
-        $currentStoredToken = Redis::connection('default')->get('refresh_token_usr:' . $user->id);
-
-        if (!$currentStoredToken || $currentStoredToken !== $payload->refreshToken) {
+        $user_id = Redis::connection('default')->get('refresh_token_:' . $payload->refreshToken);
+        if (!$user_id) {
             throw new TokenInvalidException('Invalid or expired refresh token');
         }
+        $user = $this->userRepository->find($user_id);
 
         $newAccessToken = $this->generateTokenFromUser($user);
         $newRefreshToken = $this->generateRefreshToken();
 
         // Aktualizácia refresh tokenu v Redis
-        Redis::connection('default')->command('DEL', ['refresh_token_usr:' . $user->id]);
+        $this->removeRefreshToken($payload->refreshToken);
         $this->storeRefreshToken($newRefreshToken, $user->id);
 
         return new AuthenticatedOutputData($newAccessToken, $newRefreshToken);
@@ -158,9 +154,9 @@ readonly class AuthService implements AuthServiceContract
     /**
      * {@inheritDoc}
      */
-    public function logout(int $userId)
+    public function removeRefreshToken(string $refreshToken): void
     {
-        Redis::connection('default')->command('DEL', ['refresh_token_usr:' . $userId]);
+        Redis::connection('default')->command('DEL', ['refresh_token_:' . $refreshToken]);
     }
 
     /**

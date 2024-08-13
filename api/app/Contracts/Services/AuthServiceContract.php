@@ -47,9 +47,9 @@ interface AuthServiceContract
     /**
      * Removes the refresh token from Redis. Cookie deletion is handled by controller.
      *
-     * @param int $userId
+     * @param  string  $refreshToken
      */
-    public function logout(int $userId);
+    public function removeRefreshToken(string $refreshToken): void;
 
     /**
      * Creates a new anonymous user and returns the access and refresh tokens.

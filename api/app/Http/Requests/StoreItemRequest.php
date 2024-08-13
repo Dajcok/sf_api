@@ -39,7 +39,8 @@ class StoreItemRequest extends Request
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'ingredients' => 'required|string',
-            'restaurant_id' => 'required|exists:restaurants,id'
+            'restaurant_id' => 'required|exists:restaurants,id',
+            'category_id' => 'required|exists:categories,id'
         ];
     }
 }
